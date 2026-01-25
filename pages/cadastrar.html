@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Grupo | Grupos Lista</title>
+    <meta name="description" content="Cadastre seu grupo e alcance mais membros.">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><img src="/assets/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
+            <nav>
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="/pages/vip.html">VIP</a></li>
+                    <li id="admin-link" style="display: none;"><a href="/pages/admin.html">Admin</a></li>
+                    <li id="login-link"><a href="/pages/login.html">Entrar</a></li>
+                    <li id="register-link"><a href="/pages/login.html#register">Cadastrar</a></li>
+                    <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <section class="register-group-section">
+        <div class="container">
+            <div class="register-group-container">
+                <div class="register-group-header">
+                    <h1>Cadastrar seu Grupo</h1>
+                    <p>Preencha o formulário abaixo. Após análise, seu grupo será publicado.</p>
+                </div>
+                <div class="register-group-content">
+                    <div class="register-group-form">
+                        <form id="group-form">
+                            <div class="form-row">
+                                <div class="form-group"><label for="name">Nome do Grupo</label><input type="text" id="name" name="name" class="form-control" required></div>
+                                <div class="form-group"><label for="platform">Plataforma</label><select id="platform" name="platform" class="form-control" required><option value="">Selecione</option><option value="WhatsApp">WhatsApp</option><option value="Telegram">Telegram</option><option value="Discord">Discord</option></select></div>
+                            </div>
+                            <div class="form-group"><label for="category">Categoria</label><select id="category" name="category" class="form-control" required><option value="">Selecione uma categoria</option></select></div>
+                            <div class="form-group"><label for="description">Descrição</label><textarea id="description" name="description" class="form-control" rows="5" required></textarea></div>
+                            <div class="form-group"><label for="invite_link">Link de Convite</label><input type="url" id="invite_link" name="invite_link" class="form-control" placeholder="https://chat.whatsapp.com/..." required></div>
+                            <div class="form-group"><button type="submit" class="btn btn-primary">Cadastrar Grupo</button></div>
+                        </form>
+                    </div>
+                    <div class="register-group-info">
+                        <h3>Por que cadastrar?</h3>
+                        <ul><li>Aumente o número de membros</li><li>Alcance pessoas interessadas</li><li>Gratuito e sem complicações</li><li>Possibilidade de destaque VIP</li></ul>
+                        <h3>Regras</h3>
+                        <ul><li>Conteúdo ilegal não será aceito</li><li>Spam ou conteúdo ofensivo será rejeitado</li><li>Link de convite deve ser válido</li><li>Respeite as diretrizes da comunidade</li></ul>
+                        <div class="vip-promo"><h3>Destaque VIP</h3><p>Destaque seu grupo no topo da listagem.</p><a href="/pages/vip.html" class="btn btn-vip">Saiba Mais</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-column"><h3>Sobre Nós</h3><p>Somos uma plataforma dedicada a ajudar pessoas a encontrar e compartilhar os melhores grupos.</p></div>
+            <div class="footer-column"><h3>Links Úteis</h3><ul><li><a href="/">Início</a></li><li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li><li><a href="/pages/vip.html">Planos VIP</a></li><li><a href="/pages/login.html">Entrar</a></li></ul></div>
+            <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
+            <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2023 Grupos Lista. Todos os direitos reservados.</p></div>
+    </footer>
+
+    <script src="/assets/js/supabase.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
