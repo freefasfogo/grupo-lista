@@ -1,1 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos VIP | Grupos Lista</title>
+    <meta name="description" content="Destaque seu grupo com nossos planos VIP.">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><img src="/assets/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
+            <nav>
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="/pages/vip.html">VIP</a></li>
+                    <li id="admin-link" style="display: none;"><a href="/pages/admin.html">Admin</a></li>
+                    <li id="login-link"><a href="/pages/login.html">Entrar</a></li>
+                    <li id="register-link"><a href="/pages/login.html#register">Cadastrar</a></li>
+                    <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <section class="vip-plans-section">
+        <div class="container">
+            <div class="section-header">
+                <h1>Planos VIP</h1>
+                <p>Destaque seu grupo e alcance mais membros.</p>
+            </div>
+            <div class="vip-plans-container">
+                <div class="vip-plan">
+                    <div class="vip-plan-header"><h3>Básico</h3>
+                        <div class="vip-plan-price"><span class="currency">R$</span><span class="amount">9,90</span><span class="period">/mês</span></div>
+                    </div>
+                    <div class="vip-plan-features"><ul><li>Badge VIP</li><li>Topo da categoria</li><li>Destaque visual</li><li>Estatísticas</li></ul></div>
+                    <div class="vip-plan-action"><button class="btn btn-vip" data-plan="basic">Escolher Plano</button></div>
+                </div>
+                <div class="vip-plan featured">
+                    <div class="vip-plan-badge">Mais Popular</div>
+                    <div class="vip-plan-header"><h3>Profissional</h3>
+                        <div class="vip-plan-price"><span class="currency">R$</span><span class="amount">19,90</span><span class="period">/mês</span></div>
+                    </div>
+                    <div class="vip-plan-features"><ul><li>Badge VIP</li><li>Topo da listagem</li><li>Destaque visual</li><li>Estatísticas detalhadas</li><li>Suporte prioritário</li></ul></div>
+                    <div class="vip-plan-action"><button class="btn btn-vip" data-plan="professional">Escolher Plano</button></div>
+                </div>
+                <div class="vip-plan">
+                    <div class="vip-plan-header"><h3>Empresarial</h3>
+                        <div class="vip-plan-price"><span class="currency">R$</span><span class="amount">39,90</span><span class="period">/mês</span></div>
+                    </div>
+                    <div class="vip-plan-features"><ul><li>Badge VIP exclusivo</li><li>Topo absoluto</li><li>Destaque premium</li><li>Estatísticas avançadas</li><li>Suporte dedicado</li><li>Até 3 grupos VIP</li></ul></div>
+                    <div class="vip-plan-action"><button class="btn btn-vip" data-plan="enterprise">Escolher Plano</button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-column"><h3>Sobre Nós</h3><p>Somos uma plataforma dedicada a ajudar pessoas a encontrar e compartilhar os melhores grupos.</p></div>
+            <div class="footer-column"><h3>Links Úteis</h3><ul><li><a href="/">Início</a></li><li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li><li><a href="/pages/vip.html">Planos VIP</a></li><li><a href="/pages/login.html">Entrar</a></li></ul></div>
+            <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
+            <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2023 Grupos Lista. Todos os direitos reservados.</p></div>
+    </footer>
+
+    <script src="/assets/js/supabase.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.btn-vip').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const isLoggedIn = await auth.isLoggedIn();
+                    if (!isLoggedIn) {
+                        utils.showToast('Você precisa estar logado.', 'error');
+                        setTimeout(() => window.location.href = '/pages/login.html', 1500);
+                        return;
+                    }
+                    alert('Funcionalidade de pagamento em desenvolvimento. Em breve, você poderá contratar o plano ' + btn.dataset.plan + '!');
+                });
+            });
+        });
+    </script>
+    <style>
+        .vip-plans-section { padding: 60px 0; background-color: #f9f9f9; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h1 { font-size: 36px; margin-bottom: 15px; color: var(--dark-color); }
+        .section-header p { font-size: 18px; color: var(--gray-color); max-width: 600px; margin: 0 auto; }
+        .vip-plans-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .vip-plan { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; transition: transform 0.3s, box-shadow 0.3s; }
+        .vip-plan:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .vip-plan.featured { border: 2px solid var(--vip-color); transform: scale(1.05); }
+        .vip-plan-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--vip-color); color: var(--dark-color); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        .vip-plan-header { text-align: center; margin-bottom: 30px; }
+        .vip-plan-header h3 { font-size: 24px; margin-bottom: 15px; color: var(--dark-color); }
+        .vip-plan-price { display: flex; align-items: baseline; justify-content: center; margin-bottom: 10px; }
+        .vip-plan-price .currency { font-size: 18px; color: var(--gray-color); }
+        .vip-plan-price .amount { font-size: 36px; font-weight: bold; color: var(--primary-color); margin: 0 5px; }
+        .vip-plan-price .period { font-size: 16px; color: var(--gray-color); }
+        .vip-plan-features { margin-bottom: 30px; }
+        .vip-plan-features ul { list-style: none; }
+        .vip-plan-features ul li { margin-bottom: 15px; padding-left: 25px; position: relative; }
+        .vip-plan-features ul li:before { content: "✓"; position: absolute; left: 0; color: var(--success-color); font-weight: bold; }
+        .vip-plan-action { text-align: center; }
+        @media (max-width: 768px) { .vip-plan.featured { transform: scale(1); } }
+    </style>
+</body>
+</html>
