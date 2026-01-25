@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Grupos de WhatsApp, Telegram e Discord</title>
+    <meta name="description" content="Faça login em sua conta para cadastrar grupos e acessar recursos exclusivos.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo"><img src="/assets/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
+            <nav>
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="/pages/vip.html">VIP</a></li>
+                    <li id="admin-link" style="display: none;"><a href="/pages/admin.html">Admin</a></li>
+                    <li id="login-link"><a href="/pages/login.html">Entrar</a></li>
+                    <li id="register-link"><a href="/pages/login.html#register">Cadastrar</a></li>
+                    <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-tabs">
+                    <button class="tab-btn active" data-tab="login">Entrar</button>
+                    <button class="tab-btn" data-tab="register">Cadastrar</button>
+                </div>
+                <div class="login-form-container">
+                    <div id="login-tab" class="tab-content active">
+                        <form id="login-form">
+                            <div class="form-group"><label for="login-email">E-mail</label><input type="email" id="login-email" name="email" class="form-control" required></div>
+                            <div class="form-group"><label for="login-password">Senha</label><input type="password" id="login-password" name="password" class="form-control" required></div>
+                            <div class="form-group"><button type="submit" class="btn btn-primary">Entrar</button></div>
+                            <div class="form-links"><a href="#" id="forgot-password">Esqueci minha senha</a></div>
+                        </form>
+                    </div>
+                    <div id="register-tab" class="tab-content">
+                        <form id="register-form">
+                            <div class="form-group"><label for="register-email">E-mail</label><input type="email" id="register-email" name="email" class="form-control" required></div>
+                            <div class="form-group"><label for="register-password">Senha</label><input type="password" id="register-password" name="password" class="form-control" required></div>
+                            <div class="form-group"><label for="confirm-password">Confirmar Senha</label><input type="password" id="confirm-password" name="confirm_password" class="form-control" required></div>
+                            <div class="form-group"><button type="submit" class="btn btn-primary">Cadastrar</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-column"><h3>Sobre Nós</h3><p>Somos uma plataforma dedicada a ajudar pessoas a encontrar e compartilhar os melhores grupos.</p></div>
+            <div class="footer-column"><h3>Links Úteis</h3><ul><li><a href="/">Início</a></li><li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li><li><a href="/pages/vip.html">Planos VIP</a></li><li><a href="/pages/login.html">Entrar</a></li></ul></div>
+            <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
+            <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2023 Grupos Lista. Todos os direitos reservados.</p></div>
+    </footer>
+
+    <script src="/assets/js/supabase.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const hash = window.location.hash;
+            if (hash === '#register') {
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.querySelector('[data-tab="register"]').classList.add('active');
+                document.getElementById('register-tab').classList.add('active');
+            }
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    window.location.hash = tabId === 'register' ? 'register' : '';
+                });
+            });
+            const forgotPasswordLink = document.getElementById('forgot-password');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const email = prompt('Digite seu e-mail para recuperar a senha:');
+                    if (!email) return;
+                    const { error } = await supabase.auth.resetPasswordForEmail(email);
+                    if (error) {
+                        utils.showToast('Erro ao enviar e-mail. Verifique o endereço.', 'error');
+                    } else {
+                        utils.showToast('E-mail de recuperação enviado!', 'success');
+                    }
+                });
+            }
+        });
+    </script>
+    <style>
+        .login-section { padding: 60px 0; background-color: #f9f9f9; min-height: calc(100vh - 200px); display: flex; align-items: center; }
+        .login-container { max-width: 500px; margin: 0 auto; background-color: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        .login-tabs { display: flex; background-color: #f0f0f0; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-size: 16px; font-weight: 500; cursor: pointer; transition: background-color 0.3s; }
+        .tab-btn.active { background-color: white; color: var(--primary-color); }
+        .login-form-container { padding: 30px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-links { text-align: center; margin-top: 20px; }
+        .form-links a { color: var(--primary-color); text-decoration: none; }
+        .form-links a:hover { text-decoration: underline; }
+    </style>
+</body>
+</html>
