@@ -1,1 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos VIP | Grupos de WhatsApp, Telegram e Discord</title>
+    <meta name="description" content="Destaque seu grupo com nossos planos VIP. Alcance mais membros e apareça no topo da listagem.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Planos VIP | Grupos de WhatsApp, Telegram e Discord">
+    <meta property="og:description" content="Destaque seu grupo com nossos planos VIP. Alcance mais membros e apareça no topo da listagem.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://SEU_DOMINIO.github.io/grupo-lista/pages/vip.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon-16x16.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="Logo">
+                <span>Grupos Lista</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="vip.html">VIP</a></li>
+                    <li id="admin-link" style="display: none;"><a href="admin.html">Admin</a></li>
+                    <li id="login-link"><a href="login.html">Entrar</a></li>
+                    <li id="register-link"><a href="login.html#register">Cadastrar</a></li>
+                    <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <!-- VIP Plans Section -->
+    <section class="vip-plans-section">
+        <div class="container">
+            <div class="section-header">
+                <h1>Planos VIP</h1>
+                <p>Destaque seu grupo e alcance mais membros com nossos planos VIP</p>
+            </div>
+            
+            <div class="vip-plans-container">
+                <div class="vip-plan">
+                    <div class="vip-plan-header">
+                        <h3>Básico</h3>
+                        <div class="vip-plan-price">
+                            <span class="currency">R$</span>
+                            <span class="amount">9,90</span>
+                            <span class="period">/mês</span>
+                        </div>
+                    </div>
+                    <div class="vip-plan-features">
+                        <ul>
+                            <li>Badge VIP no seu grupo</li>
+                            <li>Aparência no topo da categoria</li>
+                            <li>Destaque visual especial</li>
+                            <li>Estatísticas de visualização</li>
+                        </ul>
+                    </div>
+                    <div class="vip-plan-action">
+                        <button class="btn btn-vip" data-plan="basic">Escolher Plano</button>
+                    </div>
+                </div>
+                
+                <div class="vip-plan featured">
+                    <div class="vip-plan-badge">Mais Popular</div>
+                    <div class="vip-plan-header">
+                        <h3>Profissional</h3>
+                        <div class="vip-plan-price">
+                            <span class="currency">R$</span>
+                            <span class="amount">19,90</span>
+                            <span class="period">/mês</span>
+                        </div>
+                    </div>
+                    <div class="vip-plan-features">
+                        <ul>
+                            <li>Badge VIP no seu grupo</li>
+                            <li>Aparência no topo da listagem geral</li>
+                            <li>Destaque visual especial</li>
+                            <li>Estatísticas detalhadas</li>
+                            <li>Suporte prioritário</li>
+                        </ul>
+                    </div>
+                    <div class="vip-plan-action">
+                        <button class="btn btn-vip" data-plan="professional">Escolher Plano</button>
+                    </div>
+                </div>
+                
+                <div class="vip-plan">
+                    <div class="vip-plan-header">
+                        <h3>Empresarial</h3>
+                        <div class="vip-plan-price">
+                            <span class="currency">R$</span>
+                            <span class="amount">39,90</span>
+                            <span class="period">/mês</span>
+                        </div>
+                    </div>
+                    <div class="vip-plan-features">
+                        <ul>
+                            <li>Badge VIP exclusivo</li>
+                            <li>Aparência no topo absoluto</li>
+                            <li>Destaque visual premium</li>
+                            <li>Estatísticas avançadas</li>
+                            <li>Suporte dedicado</li>
+                            <li>Até 3 grupos VIP</li>
+                        </ul>
+                    </div>
+                    <div class="vip-plan-action">
+                        <button class="btn btn-vip" data-plan="enterprise">Escolher Plano</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="vip-benefits">
+                <h2>Benefícios do Plano VIP</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+                            </svg>
+                        </div>
+                        <h3>Aumento de Visibilidade</h3>
+                        <p>Seu grupo aparece no topo da listagem, garantindo mais visualizações e novos membros.</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                            </svg>
+                        </div>
+                        <h3>Destaque Visual</h3>
+                        <p>Badge VIP e design especial que fazem seu grupo se destacar dos demais.</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                            </svg>
+                        </div>
+                        <h3>Estatísticas Detalhadas</h3>
+                        <p>Acompanhe o desempenho do seu grupo com relatórios de visualização e cliques.</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                            </svg>
+                        </div>
+                        <h3>Suporte Prioritário</h3>
+                        <p>Atendimento rápido e dedicado para resolver suas dúvidas e necessidades.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="vip-faq">
+                <h2>Perguntas Frequentes</h2>
+                <div class="faq-item">
+                    <h3>Como funciona o plano VIP?</h3>
+                    <p>Após a contratação, seu grupo é marcado como VIP em nosso sistema e passa a receber todos os benefícios, incluindo destaque no topo da listagem e badge especial.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Posso cancelar a qualquer momento?</h3>
+                    <p>Sim, você pode cancelar seu plano VIP a qualquer momento. O benefício continua até o final do período pago.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Quais formas de pagamento são aceitas?</h3>
+                    <p>Aceitamos cartão de crédito, débito, boleto e pix através de nossa integração com Mercado Pago e Stripe.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Quanto tempo demora para ativar o plano VIP?</h3>
+                    <p>A atuação é imediata após a confirmação do pagamento. Em alguns casos, pode levar até 10 minutos para processar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Finalizar Pagamento</h2>
+            <div id="payment-form-container">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-column">
+                <h3>Sobre Nós</h3>
+                <p>Somos uma plataforma dedicada a ajudar pessoas a encontrar e compartilhar os melhores grupos de WhatsApp, Telegram e Discord.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Links Úteis</h3>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="vip.html">Planos VIP</a></li>
+                    <li><a href="login.html">Entrar</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Categorias Populares</h3>
+                <ul>
+                    <li><a href="#">Jogos</a></li>
+                    <li><a href="#">Tecnologia</a></li>
+                    <li><a href="#">Educação</a></li>
+                    <li><a href="#">Entretenimento</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contato</h3>
+                <ul>
+                    <li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Grupos Lista. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/supabase.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/main.js"></script>
+    
+    <script>
+        // Configurar modal de pagamento
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('payment-modal');
+            const closeBtn = document.querySelector('.close-modal');
+            const paymentFormContainer = document.getElementById('payment-form-container');
+            
+            // Adicionar event listeners aos botões de plano
+            document.querySelectorAll('.btn-vip').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const plan = btn.getAttribute('data-plan');
+                    
+                    // Verificar se o usuário está logado
+                    const isLoggedIn = await auth.isLoggedIn();
+                    if (!isLoggedIn) {
+                        utils.showToast('Você precisa estar logado para contratar um plano VIP.', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'login.html?redirect=vip.html';
+                        }, 1500);
+                        return;
+                    }
+                    
+                    // Mostrar modal de pagamento
+                    modal.style.display = 'block';
+                    
+                    // Carregar formulário de pagamento
+                    loadPaymentForm(plan);
+                });
+            });
+            
+            // Fechar modal
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Carregar formulário de pagamento
+            function loadPaymentForm(plan) {
+                paymentFormContainer.innerHTML = `
+                    <div class="payment-info">
+                        <h3>Plano Selecionado: ${getPlanName(plan)}</h3>
+                        <p>Valor: ${getPlanPrice(plan)}</p>
+                    </div>
+                    
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="group-select">Selecione o grupo para VIP:</label>
+                            <select id="group-select" class="form-control" required>
+                                <option value="">Carregando seus grupos...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="payment-method">Forma de Pagamento:</label>
+                            <div class="payment-methods">
+                                <label class="payment-method">
+                                    <input type="radio" name="payment-method" value="credit-card" checked>
+                                    <span>Cartão de Crédito</span>
+                                </label>
+                                <label class="payment-method">
+                                    <input type="radio" name="payment-method" value="pix">
+                                    <span>PIX</span>
+                                </label>
+                                <label class="payment-method">
+                                    <input type="radio" name="payment-method" value="boleto">
+                                    <span>Boleto</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="credit-card-form" class="payment-form-details">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="card-number">Número do Cartão</label>
+                                    <input type="text" id="card-number" class="form-control" placeholder="0000 0000 0000 0000" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="card-name">Nome no Cartão</label>
+                                    <input type="text" id="card-name" class="form-control" placeholder="Nome como está no cartão" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="card-expiry">Validade</label>
+                                    <input type="text" id="card-expiry" class="form-control" placeholder="MM/AA" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="card-cvv">CVV</label>
+                                    <input type="text" id="card-cvv" class="form-control" placeholder="123" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="pix-form" class="payment-form-details" style="display: none;">
+                            <p>Ao confirmar, você será redirecionado para a página do PIX para concluir o pagamento.</p>
+                        </div>
+                        
+                        <div id="boleto-form" class="payment-form-details" style="display: none;">
+                            <p>Ao confirmar, você será redirecionado para a página do boleto para concluir o pagamento.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Finalizar Pagamento</button>
+                        </div>
+                    </form>
+                `;
+                
+                // Carregar grupos do usuário
+                loadUserGroups();
+                
+                // Adicionar event listener ao formulário
+                document.getElementById('payment-form').addEventListener('submit', handlePaymentSubmit);
+                
+                // Adicionar event listeners para alternar formulários de pagamento
+                document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        document.querySelectorAll('.payment-form-details').forEach(form => {
+                            form.style.display = 'none';
+                        });
+                        
+                        const selectedMethod = radio.value;
+                        document.getElementById(`${selectedMethod}-form`).style.display = 'block';
+                    });
+                });
+            }
+            
+            // Carregar grupos do usuário
+            async function loadUserGroups() {
+                const user = await auth.getCurrentUser();
+                if (!user) return;
+                
+                const { data, error } = await supabase
+                    .from('groups')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('status', 'approved');
+                
+                if (error) {
+                    console.error('Erro ao carregar grupos do usuário:', error);
+                    return;
+                }
+                
+                const select = document.getElementById('group-select');
+                if (select && data.length > 0) {
+                    select.innerHTML = '<option value="">Selecione um grupo</option>';
+                    data.forEach(group => {
+                        select.innerHTML += `<option value="${group.id}">${group.name}</option>`;
+                    });
+                } else if (select) {
+                    select.innerHTML = '<option value="">Você não tem grupos aprovados</option>';
+                }
+            }
+            
+            // Lidar com submissão do formulário de pagamento
+            async function handlePaymentSubmit(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const groupId = document.getElementById('group-select').value;
+                const paymentMethod = formData.get('payment-method');
+                
+                if (!groupId) {
+                    utils.showToast('Por favor, selecione um grupo.', 'error');
+                    return;
+                }
+                
+                // Desabilitar botão de envio
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Processando...';
+                
+                try {
+                    // Criar registro de pagamento
+                    const paymentData = {
+                        group_id: groupId,
+                        status: 'pending',
+                        gateway: paymentMethod,
+                        plan: document.querySelector('.payment-info h3').textContent.split(': ')[1],
+                        amount: document.querySelector('.payment-info p').textContent.split(': ')[1],
+                        created_at: new Date().toISOString()
+                    };
+                    
+                    const payment = await db.createPayment(paymentData);
+                    
+                    if (payment) {
+                        // Redirecionar para o gateway de pagamento
+                        if (paymentMethod === 'credit-card') {
+                            // Integração com Stripe/Mercado Pago para cartão de crédito
+                            // Simulação - em produção, integrar com API real
+                            utils.showToast('Redirecionando para o gateway de pagamento...', 'success');
+                            
+                            setTimeout(() => {
+                                // Simular redirecionamento
+                                utils.showToast('Pagamento processado com sucesso! Seu grupo será VIP em breve.', 'success');
+                                modal.style.display = 'none';
+                            }, 2000);
+                        } else if (paymentMethod === 'pix') {
+                            // Integração com PIX
+                            utils.showToast('Redirecionando para a página do PIX...', 'success');
+                            
+                            setTimeout(() => {
+                                // Simular redirecionamento
+                                utils.showToast('Instruções de PIX enviadas! Após o pagamento, seu grupo será VIP.', 'success');
+                                modal.style.display = 'none';
+                            }, 2000);
+                        } else if (paymentMethod === 'boleto') {
+                            // Integração com boleto
+                            utils.showToast('Redirecionando para a página do boleto...', 'success');
+                            
+                            setTimeout(() => {
+                                // Simular redirecionamento
+                                utils.showToast('Boleto gerado com sucesso! Após o pagamento, seu grupo será VIP.', 'success');
+                                modal.style.display = 'none';
+                            }, 2000);
+                        }
+                    } else {
+                        utils.showToast('Ocorreu um erro ao processar o pagamento. Tente novamente.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao processar pagamento:', error);
+                    utils.showToast('Ocorreu um erro ao processar o pagamento. Tente novamente.', 'error');
+                } finally {
+                    // Reabilitar botão de envio
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            }
+            
+            // Obter nome do plano
+            function getPlanName(plan) {
+                const plans = {
+                    'basic': 'Básico',
+                    'professional': 'Profissional',
+                    'enterprise': 'Empresarial'
+                };
+                return plans[plan] || 'Desconhecido';
+            }
+            
+            // Obter preço do plano
+            function getPlanPrice(plan) {
+                const prices = {
+                    'basic': 'R$ 9,90/mês',
+                    'professional': 'R$ 19,90/mês',
+                    'enterprise': 'R$ 39,90/mês'
+                };
+                return prices[plan] || 'Preço não disponível';
+            }
+        });
+    </script>
+    
+    <style>
+        /* Estilos adicionais para a página VIP */
+        .vip-plans-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .section-header p {
+            font-size: 18px;
+            color: var(--gray-color);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .vip-plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .vip-plan {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .vip-plan:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .vip-plan.featured {
+            border: 2px solid var(--vip-color);
+            transform: scale(1.05);
+        }
+        
+        .vip-plan-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--vip-color);
+            color: var(--dark-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .vip-plan-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .vip-plan-header h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .vip-plan-price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .vip-plan-price .currency {
+            font-size: 18px;
+            color: var(--gray-color);
+        }
+        
+        .vip-plan-price .amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0 5px;
+        }
+        
+        .vip-plan-price .period {
+            font-size: 16px;
+            color: var(--gray-color);
+        }
+        
+        .vip-plan-features {
+            margin-bottom: 30px;
+        }
+        
+        .vip-plan-features ul {
+            list-style: none;
+        }
+        
+        .vip-plan-features ul li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .vip-plan-features ul li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .vip-plan-action {
+            text-align: center;
+        }
+        
+        .vip-benefits {
+            margin-bottom: 60px;
+        }
+        
+        .vip-benefits h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 40px;
+            color: var(--dark-color);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .benefit-item {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .benefit-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+        }
+        
+        .benefit-item h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .benefit-item p {
+            color: var(--gray-color);
+            line-height: 1.6;
+        }
+        
+        .vip-faq {
+            margin-bottom: 60px;
+        }
+        
+        .vip-faq h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 40px;
+            color: var(--dark-color);
+        }
+        
+        .faq-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .faq-item h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .faq-item p {
+            color: var(--gray-color);
+            line-height: 1.6;
+        }
+        
+        /* Modal de Pagamento */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+        
+        .close-modal:hover {
+            color: var(--dark-color);
+        }
+        
+        .payment-info {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .payment-info h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .payment-info p {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .payment-form-details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .vip-plan.featured {
+                transform: scale(1);
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</body>
+</html>
