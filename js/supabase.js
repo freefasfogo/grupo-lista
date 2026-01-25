@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://nhbctpgmzrnrfulkuhgf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-oGF3MZ-AT3C04L7b2m-OA_PZyi4BSx';
 
 // Inicialização do cliente Supabase
-const supabase = window.supabase.createClient(SUBABASE_URL, SUPABASE_ANON_KEY);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Funções auxiliares para interagir com o Supabase
 const db = {
@@ -189,7 +189,12 @@ const db = {
         
         return data[0];
     }
-    // Teste de conexão
+}; // <-- Esta chave estava faltando!
+
+// Exportar para uso em outros arquivos
+window.db = db;
+
+// Teste de conexão (fora do objeto db)
 supabase.from('categories').select('*').then(result => {
   console.log('Teste de conexão:', result);
   if (result.error) {
@@ -197,7 +202,4 @@ supabase.from('categories').select('*').then(result => {
   } else {
     console.log('Conexão bem-sucedida! Categorias encontradas:', result.data);
   }
-};
-
-// Exportar para uso em outros arquivos
-window.db = db;
+});
