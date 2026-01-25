@@ -189,6 +189,14 @@ const db = {
         
         return data[0];
     }
+    // Teste de conexão
+supabase.from('categories').select('*').then(result => {
+  console.log('Teste de conexão:', result);
+  if (result.error) {
+    console.error('Erro na conexão:', result.error);
+  } else {
+    console.log('Conexão bem-sucedida! Categorias encontradas:', result.data);
+  }
 };
 
 // Exportar para uso em outros arquivos
