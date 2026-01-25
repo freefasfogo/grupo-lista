@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Área de Acesso</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+<script>
+    // Se não houver parâmetro, assume que é o link direto (bio.html)
+    function getQueryParam(param) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+    }
+</script>
+</head>
+<body class="dark age-bg">
+
+<div class="age-container">
+    <div class="age-box">
+        <h1>🔞 Conteúdo Adulto</h1>
+        <p class="age-text">Este site contém conteúdo exclusivo destinado apenas a maiores de 18 anos. Ao continuar, você confirma que tem idade legal para acessar este material.</p>
+        <button class="age-btn" onclick="acceptAge()">CONFIRMAR IDADE</button>
+        <span class="age-note">Acesso permitido somente para maiores de 18 anos.</span>
+    </div>
+</div>
+
+<!-- Dentro do seu index.html -->
+<script>
+function acceptAge(){
+    localStorage.setItem('age_ok','1');
+    
+    // Pega o parâmetro 'go' da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const destination = urlParams.get('go');
+
+    if (destination === 'meta') {
+        // Vindo dos anúncios da Meta: vai para a página segura
+        window.location.href = "meta-safe.html";
+    } else {
+        // Padrão (orgânico, bio, etc.): vai para a página explícita
+        window.location.href = "bio.html";
+    }
+}
+</script>
+
+</body>
+</html>
