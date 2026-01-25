@@ -5,15 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grupos de WhatsApp, Telegram e Discord | Encontre os melhores grupos</title>
     <meta name="description" content="Encontre e cadastre os melhores grupos de WhatsApp, Telegram e Discord. Categorias variadas para todos os interesses.">
-    <meta name="keywords" content="grupos whatsapp, grupos telegram, grupos discord, lista de grupos, cadastrar grupo">
     <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Grupos de WhatsApp, Telegram e Discord | Encontre os melhores grupos">
-    <meta property="og:description" content="Encontre e cadastre os melhores grupos de WhatsApp, Telegram e Discord. Categorias variadas para todos os interesses.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://freefasfogo.github.io/grupo-lista/">
-    <meta property="og:image" content="https://freefasfogo.github.io/grupo-lista/assets/images/og-image.jpg">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
@@ -22,7 +14,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/main.css">
     
-    <!-- Supabase -->
+    <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
@@ -35,7 +27,7 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html">Início</a></li>
+                    <li><a href="/">Início</a></li>
                     <li><a href="pages/cadastrar.html">Cadastrar Grupo</a></li>
                     <li><a href="pages/vip.html">VIP</a></li>
                     <li id="admin-link" style="display: none;"><a href="pages/admin.html">Admin</a></li>
@@ -86,6 +78,7 @@
         <div class="container">
             <h2 class="section-title">Grupos em Destaque</h2>
             <div id="groups-container" class="groups-grid">
+                <!-- Os grupos serão carregados aqui pelo JavaScript -->
                 <div class="spinner"></div>
             </div>
         </div>
@@ -101,7 +94,7 @@
             <div class="footer-column">
                 <h3>Links Úteis</h3>
                 <ul>
-                    <li><a href="index.html">Início</a></li>
+                    <li><a href="/">Início</a></li>
                     <li><a href="pages/cadastrar.html">Cadastrar Grupo</a></li>
                     <li><a href="pages/vip.html">Planos VIP</a></li>
                     <li><a href="pages/login.html">Entrar</a></li>
