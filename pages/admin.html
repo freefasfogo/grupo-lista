@@ -8,12 +8,12 @@
     <meta name="robots" content="noindex, nofollow">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
     
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -23,17 +23,17 @@
     <header>
         <div class="container">
             <div class="logo">
-                <img src="../assets/images/logo.png" alt="Logo">
+                <img src="/assets/images/logo.png" alt="Logo">
                 <span>Grupos Lista</span>
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html">Início</a></li>
-                    <li><a href="cadastrar.html">Cadastrar Grupo</a></li>
-                    <li><a href="vip.html">VIP</a></li>
-                    <li id="admin-link" style="display: none;"><a href="admin.html">Admin</a></li>
-                    <li id="login-link"><a href="login.html">Entrar</a></li>
-                    <li id="register-link"><a href="login.html#register">Cadastrar</a></li>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="/pages/vip.html">VIP</a></li>
+                    <li id="admin-link" style="display: none;"><a href="/pages/admin.html">Admin</a></li>
+                    <li id="login-link"><a href="/pages/login.html">Entrar</a></li>
+                    <li id="register-link"><a href="/pages/login.html#register">Cadastrar</a></li>
                     <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
                 </ul>
             </nav>
@@ -131,38 +131,6 @@
                 </div>
             </section>
             
-            <!-- Payments Section -->
-            <section id="payments" class="admin-section" style="display: none;">
-                <div class="admin-header">
-                    <h2 class="admin-title">Gerenciar Pagamentos</h2>
-                </div>
-                
-                <div class="admin-card">
-                    <div class="table-responsive">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Grupo</th>
-                                    <th>Valor</th>
-                                    <th>Status</th>
-                                    <th>Gateway</th>
-                                    <th>Data</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="payments-table">
-                                <tr>
-                                    <td colspan="7" class="text-center">
-                                        <div class="spinner"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            
             <!-- Settings Section -->
             <section id="settings" class="admin-section" style="display: none;">
                 <div class="admin-header">
@@ -179,11 +147,6 @@
                         <div class="form-group">
                             <label for="site-description">Descrição do Site</label>
                             <textarea id="site-description" name="site-description" class="form-control" rows="3">Encontre e cadastre os melhores grupos de WhatsApp, Telegram e Discord.</textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="admin-email">E-mail do Administrador</label>
-                            <input type="email" id="admin-email" name="admin-email" class="form-control" value="admin@gruposlista.com">
                         </div>
                         
                         <div class="form-group">
@@ -223,10 +186,10 @@
             <div class="footer-column">
                 <h3>Links Úteis</h3>
                 <ul>
-                    <li><a href="index.html">Início</a></li>
-                    <li><a href="cadastrar.html">Cadastrar Grupo</a></li>
-                    <li><a href="vip.html">Planos VIP</a></li>
-                    <li><a href="login.html">Entrar</a></li>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/pages/cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="/pages/vip.html">Planos VIP</a></li>
+                    <li><a href="/pages/login.html">Entrar</a></li>
                 </ul>
             </div>
             <div class="footer-column">
@@ -253,10 +216,10 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="../assets/js/supabase.js"></script>
-    <script src="../assets/js/auth.js"></script>
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/admin.js"></script>
+    <script src="/assets/js/supabase.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/admin.js"></script>
     
     <style>
         /* Estilos adicionais para a página admin */
