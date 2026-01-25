@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://SEU_DOMINIO.github.io/grupo-lista/data/sitemap.xml
+Sitemap: https://freefasfogo.github.io/grupo-lista/data/sitemap.xml
