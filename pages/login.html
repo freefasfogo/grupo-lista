@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Grupos Lista</title>
     <meta name="description" content="Faça login em sua conta para cadastrar grupos e acessar recursos exclusivos.">
-    <meta name="robots" content="noindex, nofollow">
-    
-    <link rel="icon" type="image/png" sizes="32x32" href="/grupo-lista/assets/images/favicon-32x32.png">
-    <link rel="stylesheet" href="/grupo-lista/assets/css/main.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/grupo-lista/static/images/favicon-32x32.png">
+    <link rel="stylesheet" href="/grupo-lista/static/css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <div class="logo"><img src="/grupo-lista/assets/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
+            <div class="logo"><img src="/grupo-lista/static/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
             <nav>
                 <ul>
                     <li><a href="/grupo-lista/">Início</a></li>
@@ -65,13 +63,14 @@
             <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
             <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><p>&copy; 2023 Grupos Lista. Todos os direitos reservados.</p></div>
+        <div class="footer-bottom"><p>&copy; <span id="current-year"></span> Grupos Lista. Todos os direitos reservados.</p></div>
     </footer>
 
-    <script src="/grupo-lista/assets/js/supabase.js"></script>
-    <script src="/grupo-lista/assets/js/auth.js"></script>
-    <script src="/grupo-lista/assets/js/main.js"></script>
+    <script src="/grupo-lista/static/js/supabase.js"></script>
+    <script src="/grupo-lista/static/js/auth.js"></script>
+    <script src="/grupo-lista/static/js/main.js"></script>
     <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
         document.addEventListener('DOMContentLoaded', () => {
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
