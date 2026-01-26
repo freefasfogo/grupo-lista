@@ -1,22 +1,19 @@
+/* ============================================
+   RESET E VARIÁVEIS
+============================================ */
 
----
-
-## 📁 Pasta `assets/css`
-
-### `main.css`
-
-```css
-/* Reset e Estilos Globais */
+/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Variáveis CSS */
 :root {
-    --primary-color: #25D366; /* WhatsApp */
-    --secondary-color: #0088cc; /* Telegram */
-    --tertiary-color: #5865F2; /* Discord */
+    --primary-color: #25D366;
+    --secondary-color: #0088cc;
+    --tertiary-color: #5865F2;
     --dark-color: #2c3e50;
     --light-color: #f8f9fa;
     --gray-color: #6c757d;
@@ -26,11 +23,15 @@
     --warning-color: #ffc107;
 }
 
+/* ============================================
+   ESTILOS GLOBAIS
+============================================ */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--dark-color);
     background-color: var(--light-color);
+    color: var(--dark-color);
 }
 
 .container {
@@ -39,7 +40,10 @@ body {
     padding: 0 20px;
 }
 
-/* Header */
+/* ============================================
+   HEADER E NAVEGAÇÃO
+============================================ */
+
 header {
     background-color: #fff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -59,7 +63,11 @@ header .container {
     display: flex;
     align-items: center;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.logo:hover {
     color: var(--primary-color);
 }
 
@@ -78,15 +86,19 @@ nav ul li {
 }
 
 nav ul li a {
-    text-decoration: none;
     color: var(--dark-color);
-    font-weight: 500;
+    text-decoration: none;
     transition: color 0.3s;
+    font-weight: 500;
 }
 
 nav ul li a:hover {
     color: var(--primary-color);
 }
+
+/* ============================================
+   BOTÕES
+============================================ */
 
 .btn {
     display: inline-block;
@@ -95,13 +107,13 @@ nav ul li a:hover {
     text-decoration: none;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: 0.3s;
     border: none;
 }
 
 .btn-primary {
     background-color: var(--primary-color);
-    color: white;
+    color: #fff;
 }
 
 .btn-outline {
@@ -112,13 +124,16 @@ nav ul li a:hover {
 
 .btn-outline:hover {
     background-color: var(--primary-color);
-    color: white;
+    color: #fff;
 }
 
-/* Hero Section */
+/* ============================================
+   HERO SECTION
+============================================ */
+
 .hero {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    color: #fff;
     padding: 60px 0;
     text-align: center;
 }
@@ -134,11 +149,14 @@ nav ul li a:hover {
     margin: 0 auto 30px;
 }
 
-/* Search and Filter Section */
+/* ============================================
+   FILTRO DE BUSCA
+============================================ */
+
 .search-filter {
-    background-color: white;
     padding: 30px 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
 }
 
 .search-filter .container {
@@ -183,11 +201,14 @@ nav ul li a:hover {
     padding: 10px 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: white;
     font-size: 16px;
+    background-color: #fff;
 }
 
-/* Groups Section */
+/* ============================================
+   SEÇÃO DE GRUPOS
+============================================ */
+
 .groups-section {
     padding: 40px 0;
 }
@@ -205,8 +226,12 @@ nav ul li a:hover {
     gap: 25px;
 }
 
+/* ============================================
+   CARTÕES DE GRUPO
+============================================ */
+
 .group-card {
-    background-color: white;
+    background-color: #fff;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
@@ -223,34 +248,42 @@ nav ul li a:hover {
     border: 2px solid var(--vip-color);
 }
 
-.vip-badge {
+/* Badges */
+.vip-badge, .platform-badge {
     position: absolute;
     top: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.vip-badge {
     right: 10px;
     background-color: var(--vip-color);
     color: var(--dark-color);
-    padding: 5px 10px;
     border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
     z-index: 10;
 }
 
 .platform-badge {
-    position: absolute;
-    top: 10px;
     left: 10px;
-    padding: 5px 10px;
     border-radius: 5px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
+    color: #fff;
 }
 
-.platform-whatsapp { background-color: var(--primary-color); }
-.platform-telegram { background-color: var(--secondary-color); }
-.platform-discord { background-color: var(--tertiary-color); }
+.platform-whatsapp {
+    background-color: var(--primary-color);
+}
 
+.platform-telegram {
+    background-color: var(--secondary-color);
+}
+
+.platform-discord {
+    background-color: var(--tertiary-color);
+}
+
+/* Conteúdo do Card */
 .group-card-image {
     height: 150px;
     background-color: #f0f0f0;
@@ -264,12 +297,6 @@ nav ul li a:hover {
     padding: 20px;
 }
 
-.group-card-title {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: var(--dark-color);
-}
-
 .group-card-category {
     display: inline-block;
     background-color: #f0f0f0;
@@ -277,6 +304,12 @@ nav ul li a:hover {
     padding: 3px 8px;
     border-radius: 15px;
     font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.group-card-title {
+    font-size: 18px;
+    color: var(--dark-color);
     margin-bottom: 10px;
 }
 
@@ -307,51 +340,10 @@ nav ul li a:hover {
     margin-right: 5px;
 }
 
-/* Footer */
-footer {
-    background-color: var(--dark-color);
-    color: white;
-    padding: 40px 0;
-}
+/* ============================================
+   FORMULÁRIOS
+============================================ */
 
-footer .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-}
-
-footer h3 {
-    margin-bottom: 20px;
-    font-size: 18px;
-}
-
-footer ul {
-    list-style: none;
-}
-
-footer ul li {
-    margin-bottom: 10px;
-}
-
-footer ul li a {
-    color: #ccc;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-footer ul li a:hover {
-    color: white;
-}
-
-.footer-bottom {
-    text-align: center;
-    padding-top: 20px;
-    margin-top: 20px;
-    border-top: 1px solid #444;
-    color: #ccc;
-}
-
-/* Form Styles */
 .form-group {
     margin-bottom: 20px;
 }
@@ -371,7 +363,7 @@ footer ul li a:hover {
 }
 
 .form-control:focus {
-    outline: none;
+    outline: 0;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.2);
 }
@@ -381,58 +373,16 @@ textarea.form-control {
     resize: vertical;
 }
 
-/* Loading Spinner */
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    border-top: 4px solid var(--primary-color);
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+/* ============================================
+   REGISTRO DE GRUPO
+============================================ */
 
-/* Toast Notification */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    background-color: var(--dark-color);
-    color: white;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: transform 0.3s, opacity 0.3s;
-    z-index: 1000;
-}
-
-.toast.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.toast.success { background-color: var(--success-color); }
-.toast.error { background-color: var(--danger-color); }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    header .container { flex-direction: column; }
-    nav ul { margin-top: 15px; }
-    nav ul li { margin: 0 10px; }
-    .hero h1 { font-size: 28px; }
-    .hero p { font-size: 16px; }
-    .search-filter .container { flex-direction: column; align-items: stretch; }
-    .filter-options { justify-content: space-between; }
-}
-
-/* Estilos para páginas específicas */
 .register-group-section, .vip-plans-section {
     padding: 60px 0;
     background-color: #f9f9f9;
@@ -441,7 +391,7 @@ textarea.form-control {
 .register-group-container {
     max-width: 900px;
     margin: 0 auto;
-    background-color: white;
+    background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -449,7 +399,7 @@ textarea.form-control {
 
 .register-group-header {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
+    color: #fff;
     padding: 30px;
     text-align: center;
 }
@@ -497,7 +447,7 @@ textarea.form-control {
     position: absolute;
     left: 0;
     color: var(--success-color);
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .vip-promo {
@@ -512,21 +462,140 @@ textarea.form-control {
     color: var(--dark-color);
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+/* ============================================
+   FOOTER
+============================================ */
+
+footer {
+    background-color: var(--dark-color);
+    color: #fff;
+    padding: 40px 0;
 }
 
+footer h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+footer ul {
+    list-style: none;
+}
+
+footer ul li {
+    margin-bottom: 10px;
+}
+
+footer ul li a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer ul li a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #444;
+    color: #ccc;
+}
+
+/* ============================================
+   COMPONENTES ESPECIAIS
+============================================ */
+
+/* Spinner */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid var(--primary-color);
+    width: 30px;
+    height: 30px;
+    animation: 1s linear infinite spin;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 1000;
+    background-color: var(--dark-color);
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast.success {
+    background-color: var(--success-color);
+}
+
+.toast.error {
+    background-color: var(--danger-color);
+}
+
+/* ============================================
+   RESPONSIVIDADE
+============================================ */
+
 @media (max-width: 768px) {
-    .register-group-content {
+    header .container {
+        flex-direction: column;
+    }
+    
+    nav ul {
+        margin-top: 15px;
+    }
+    
+    nav ul li {
+        margin: 0 10px;
+    }
+    
+    .hero h1 {
+        font-size: 28px;
+    }
+    
+    .hero p {
+        font-size: 16px;
+    }
+    
+    .search-filter .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-options {
+        justify-content: space-between;
+    }
+    
+    .form-row, .register-group-content {
         grid-template-columns: 1fr;
     }
+    
     .register-group-info {
         border-left: none;
         border-top: 1px solid #eee;
-    }
-    .form-row {
-        grid-template-columns: 1fr;
     }
 }
