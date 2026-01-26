@@ -76,25 +76,26 @@ const groupsRenderer = {
         `;
     },
     
-    async renderGroupsList(containerId, filters = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
+async renderGroupsList(containerId, filters = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    container.innerHTML = '<div class="spinner"></div>';
+    
+    try {
+        const groups = await db.getGroups(filters);
         
-        container.innerHTML = '<div class="spinner"></div>';
-        
-        try {
-            const groups = await db.getGroups(filters);
-            
-            if (groups.length === 0) {
-                container.innerHTML = '<p class="text-center">Nenhum grupo encontrado. <a href="pages/cadastrar.html">Seja o primeiro a cadastrar!</a></p>';
-                return;
-            }
-            
-            container.innerHTML = groups.map(group => this.renderGroupCard(group)).join('');
-        } catch (error) {
-            console.error('Erro ao renderizar grupos:', error);
-            container.innerHTML = '<p class="text-center">Ocorreu um erro ao carregar os grupos. Tente novamente mais tarde.</p>';
+        if (groups.length === 0) {
+            container.innerHTML = '<p class="text-center">Nenhum grupo encontrado. <a href="/grupo-lista/pages/cadastrar.html">Seja o primeiro a cadastrar!</a></p>';
+            return;
         }
+        
+        container.innerHTML = groups.map(group => this.renderGroupCard(group)).join('');
+    } catch (error) {
+        console.error('Erro ao renderizar grupos:', error);
+        container.innerHTML = '<p class="text-center">Ocorreu um erro ao carregar os grupos. Tente novamente mais tarde.</p>';
+    }
+}
     },
     
     async renderGroupDetails(groupId) {
