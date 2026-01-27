@@ -1,23 +1,48 @@
+// Verificar se supabase está disponível
+if (typeof supabase === 'undefined') {
+    console.error('Supabase não está disponível! Verifique se o script foi carregado.');
+}
+
 // Funções de autenticação
 const auth = {
     // Verificar se usuário está logado
     async isLoggedIn() {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error) {
-            console.error('Erro ao verificar autenticação:', error);
+        try {
+            if (!supabase || !supabase.auth) {
+                console.error('Supabase auth não disponível');
+                return false;
+            }
+            
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                return false;
+            }
+            return !!user;
+        } catch (error) {
+            console.error('Erro inesperado:', error);
             return false;
         }
-        return !!user;
     },
     
     // Obter usuário atual
     async getCurrentUser() {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error) {
-            console.error('Erro ao obter usuário:', error);
+        try {
+            if (!supabase || !supabase.auth) {
+                console.error('Supabase auth não disponível');
+                return null;
+            }
+            
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error) {
+                console.error('Erro ao obter usuário:', error);
+                return null;
+            }
+            return user;
+        } catch (error) {
+            console.error('Erro inesperado:', error);
             return null;
         }
-        return user;
     },
     
     // Verificar se é admin
@@ -37,6 +62,12 @@ const auth = {
     // Login
     async login(email, password) {
         try {
+            if (!supabase || !supabase.auth) {
+                console.error('Supabase auth não disponível para login');
+                return { success: false, error: 'Sistema indisponível' };
+            }
+            
+            console.log('Tentando login com:', email);
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password
@@ -47,9 +78,10 @@ const auth = {
                 return { success: false, error: error.message };
             }
             
+            console.log('Login bem-sucedido:', data.user);
             return { success: true, user: data.user };
         } catch (error) {
-            console.error('Erro no login:', error);
+            console.error('Erro inesperado no login:', error);
             return { success: false, error: 'Erro inesperado' };
         }
     },
@@ -57,9 +89,18 @@ const auth = {
     // Registro
     async register(email, password) {
         try {
+            if (!supabase || !supabase.auth) {
+                console.error('Supabase auth não disponível para registro');
+                return { success: false, error: 'Sistema indisponível' };
+            }
+            
+            console.log('Tentando registrar:', email);
             const { data, error } = await supabase.auth.signUp({
                 email,
-                password
+                password,
+                options: {
+                    emailRedirectTo: window.location.origin + '/pages/login.html'
+                }
             });
             
             if (error) {
@@ -67,18 +108,26 @@ const auth = {
                 return { success: false, error: error.message };
             }
             
+            console.log('Registro bem-sucedido:', data.user);
+            
             // Criar perfil do usuário
             if (data.user) {
-                await supabase.from('users').insert({
-                    id: data.user.id,
-                    email: data.user.email,
-                    role: 'user'
-                });
+                try {
+                    await supabase.from('users').insert({
+                        id: data.user.id,
+                        email: data.user.email,
+                        role: 'user'
+                    });
+                    console.log('Perfil criado com sucesso');
+                } catch (profileError) {
+                    console.error('Erro ao criar perfil:', profileError);
+                    // Continua mesmo com erro no perfil
+                }
             }
             
             return { success: true, user: data.user };
         } catch (error) {
-            console.error('Erro no registro:', error);
+            console.error('Erro inesperado no registro:', error);
             return { success: false, error: 'Erro inesperado' };
         }
     },
@@ -86,16 +135,42 @@ const auth = {
     // Logout
     async logout() {
         try {
+            if (!supabase || !supabase.auth) {
+                console.error('Supabase auth não disponível para logout');
+                return false;
+            }
+            
             const { error } = await supabase.auth.signOut();
             if (error) {
                 console.error('Erro no logout:', error);
                 return false;
             }
+            console.log('Logout bem-sucedido');
             return true;
         } catch (error) {
-            console.error('Erro no logout:', error);
+            console.error('Erro inesperado no logout:', error);
             return false;
         }
+    },
+    
+    // Redirecionar se não estiver logado
+    async requireAuth(redirectUrl = '/pages/login.html') {
+        const isLoggedIn = await this.isLoggedIn();
+        if (!isLoggedIn) {
+            window.location.href = redirectUrl;
+            return false;
+        }
+        return true;
+    },
+    
+    // Redirecionar se não for admin
+    async requireAdmin(redirectUrl = '/pages/login.html') {
+        const isAdmin = await this.isAdmin();
+        if (!isAdmin) {
+            window.location.href = redirectUrl;
+            return false;
+        }
+        return true;
     },
     
     // Atualizar UI de autenticação
@@ -103,6 +178,8 @@ const auth = {
         try {
             const isLoggedIn = await this.isLoggedIn();
             const isAdmin = await this.isAdmin();
+            
+            console.log('Atualizando UI - Logado:', isLoggedIn, 'Admin:', isAdmin);
             
             // Elementos da UI
             const loginLink = document.getElementById('login-link');
@@ -130,11 +207,15 @@ const auth = {
     }
 };
 
-// Escutar mudanças de autenticação
-supabase.auth.onAuthStateChange((event, session) => {
-    console.log('Estado de autenticação mudou:', event);
-    auth.updateAuthUI();
-});
+// Escutar mudanças de autenticação - SÓ SE SUPABASE EXISTIR
+if (supabase && supabase.auth) {
+    supabase.auth.onAuthStateChange((event, session) => {
+        console.log('Estado de autenticação mudou:', event);
+        auth.updateAuthUI();
+    });
+} else {
+    console.warn('Supabase não disponível para onAuthStateChange');
+}
 
 // Exportar para uso global
 window.auth = auth;
