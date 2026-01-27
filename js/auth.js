@@ -69,6 +69,7 @@ const auth = {
         if (!this._checkClient()) return false;
         
         try {
+            console.log('Fazendo logout...');
             const { error } = await window.supabaseClient.auth.signOut();
             if (error) {
                 console.error('Erro no logout:', error.message);
@@ -102,11 +103,12 @@ const auth = {
     // Atualizar UI de autenticação
     async updateAuthUI() {
         try {
-            if (!this._checkClient()) return;
+            console.log('Atualizando UI de autenticação...');
             
             const isLoggedIn = await this.isLoggedIn();
-            console.log('UI - Logado:', isLoggedIn);
+            console.log('Usuário logado:', isLoggedIn);
             
+            // Elementos da UI
             const elements = {
                 login: document.getElementById('login-link'),
                 register: document.getElementById('register-link'),
@@ -115,15 +117,39 @@ const auth = {
             };
             
             if (isLoggedIn) {
-                if (elements.login) elements.login.style.display = 'none';
-                if (elements.register) elements.register.style.display = 'none';
-                if (elements.logout) elements.logout.style.display = 'block';
+                console.log('Configurando UI para usuário LOGADO');
+                if (elements.login) {
+                    elements.login.style.display = 'none';
+                    console.log('Login link escondido');
+                }
+                if (elements.register) {
+                    elements.register.style.display = 'none';
+                    console.log('Register link escondido');
+                }
+                if (elements.logout) {
+                    elements.logout.style.display = 'block';
+                    console.log('Logout link mostrado');
+                }
             } else {
-                if (elements.login) elements.login.style.display = 'block';
-                if (elements.register) elements.register.style.display = 'block';
-                if (elements.logout) elements.logout.style.display = 'none';
-                if (elements.admin) elements.admin.style.display = 'none';
+                console.log('Configurando UI para usuário NÃO LOGADO');
+                if (elements.login) {
+                    elements.login.style.display = 'block';
+                    console.log('Login link mostrado');
+                }
+                if (elements.register) {
+                    elements.register.style.display = 'block';
+                    console.log('Register link mostrado');
+                }
+                if (elements.logout) {
+                    elements.logout.style.display = 'none';
+                    console.log('Logout link escondido');
+                }
+                if (elements.admin) {
+                    elements.admin.style.display = 'none';
+                }
             }
+            
+            console.log('UI atualizada com sucesso');
         } catch (error) {
             console.error('Erro ao atualizar UI:', error);
         }
@@ -133,9 +159,18 @@ const auth = {
 // Configurar listener de mudança de autenticação
 if (window.supabaseClient && window.supabaseClient.auth) {
     window.supabaseClient.auth.onAuthStateChange((event, session) => {
-        console.log('Auth state changed:', event);
-        auth.updateAuthUI();
+        console.log('📢 Estado de autenticação mudou:', event);
+        console.log('Sessão:', session ? 'ativa' : 'inativa');
+        
+        // Forçar atualização da UI
+        setTimeout(() => {
+            auth.updateAuthUI();
+        }, 500);
     });
+    
+    console.log('Listener de auth state configurado');
+} else {
+    console.warn('Não foi possível configurar listener de auth state');
 }
 
 // Exportar para uso global
