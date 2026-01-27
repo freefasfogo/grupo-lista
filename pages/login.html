@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Grupos Lista</title>
     <meta name="description" content="Faça login em sua conta para cadastrar grupos e acessar recursos exclusivos.">
-    <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="stylesheet" href="../static/css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <div class="logo"><img src="../static/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
+            <div class="logo"><img src="../images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
             <nav>
                 <ul>
                     <li><a href="../index.html">Início</a></li>
@@ -66,33 +66,54 @@
         <div class="footer-bottom"><p>&copy; <span id="current-year"></span> Grupos Lista. Todos os direitos reservados.</p></div>
     </footer>
 
-    <script src="../static/js/supabase.js"></script>
-    <script src="../static/js/auth.js"></script>
-    <script src="../static/js/main.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
     <script>
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
         document.addEventListener('DOMContentLoaded', () => {
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
             const hash = window.location.hash;
+            
             if (hash === '#register') {
                 tabBtns.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
                 document.querySelector('[data-tab="register"]').classList.add('active');
                 document.getElementById('register-tab').classList.add('active');
             }
+            
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tabId = btn.getAttribute('data-tab');
                     tabBtns.forEach(b => b.classList.remove('active'));
                     tabContents.forEach(c => c.classList.remove('active'));
+                    
                     btn.classList.add('active');
                     document.getElementById(`${tabId}-tab`).classList.add('active');
                     window.location.hash = tabId === 'register' ? 'register' : '';
                 });
             });
+            
+            const forgotPasswordLink = document.getElementById('forgot-password');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const email = prompt('Digite seu e-mail para recuperar a senha:');
+                    if (!email) return;
+                    
+                    const { error } = await supabase.auth.resetPasswordForEmail(email);
+                    if (error) {
+                        alert('Erro ao enviar e-mail. Verifique o endereço.');
+                    } else {
+                        alert('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+                    }
+                });
+            }
         });
     </script>
+    
     <style>
         .login-section { padding: 60px 0; background-color: #f9f9f9; min-height: calc(100vh - 200px); display: flex; align-items: center; }
         .login-container { max-width: 500px; margin: 0 auto; background-color: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
@@ -106,10 +127,5 @@
         .form-links a { color: var(--primary-color); text-decoration: none; }
         .form-links a:hover { text-decoration: underline; }
     </style>
-    <!-- NO FINAL DO ARQUIVO, antes do </body> -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../static/js/supabase.js"></script>
-<script src="../static/js/auth.js"></script>
-<script src="../static/js/main.js"></script>
 </body>
 </html>
