@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planos VIP | Grupos Lista</title>
     <meta name="description" content="Destaque seu grupo com nossos planos VIP.">
-    <link rel="icon" type="image/png" sizes="32x32" href="/grupo-lista/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="stylesheet" href="../static/css/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <div class="logo"><img src="/grupo-lista/static/images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
+            <div class="logo"><img src="../images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
             <nav>
                 <ul>
-                    <li><a href="/grupo-lista/">Início</a></li>
-                    <li><a href="/grupo-lista/pages/cadastrar.html">Cadastrar Grupo</a></li>
-                    <li><a href="/grupo-lista/pages/vip.html">VIP</a></li>
-                    <li id="admin-link" style="display: none;"><a href="/grupo-lista/pages/admin.html">Admin</a></li>
-                    <li id="login-link"><a href="/grupo-lista/pages/login.html">Entrar</a></li>
-                    <li id="register-link" style="display: none;"><a href="/grupo-lista/pages/login.html#register">Cadastrar</a></li>
+                    <li><a href="../index.html">Início</a></li>
+                    <li><a href="cadastrar.html">Cadastrar Grupo</a></li>
+                    <li><a href="vip.html">VIP</a></li>
+                    <li id="admin-link" style="display: none;"><a href="admin.html">Admin</a></li>
+                    <li id="login-link"><a href="login.html">Entrar</a></li>
+                    <li id="register-link" style="display: none;"><a href="login.html#register">Cadastrar</a></li>
                     <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
                 </ul>
             </nav>
@@ -63,33 +63,39 @@
     <footer>
         <div class="container">
             <div class="footer-column"><h3>Sobre Nós</h3><p>Somos uma plataforma dedicada a ajudar pessoas a encontrar e compartilhar os melhores grupos.</p></div>
-            <div class="footer-column"><h3>Links Úteis</h3><ul><li><a href="/grupo-lista/">Início</a></li><li><a href="/grupo-lista/pages/cadastrar.html">Cadastrar Grupo</a></li><li><a href="/grupo-lista/pages/vip.html">Planos VIP</a></li><li><a href="/grupo-lista/pages/login.html">Entrar</a></li></ul></div>
+            <div class="footer-column"><h3>Links Úteis</h3><ul><li><a href="../index.html">Início</a></li><li><a href="cadastrar.html">Cadastrar Grupo</a></li><li><a href="vip.html">Planos VIP</a></li><li><a href="login.html">Entrar</a></li></ul></div>
             <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
             <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
         </div>
         <div class="footer-bottom"><p>&copy; <span id="current-year"></span> Grupos Lista. Todos os direitos reservados.</p></div>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../static/js/supabase.js"></script>
-<script src="../static/js/auth.js"></script>
-<script src="../static/js/main.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
     <script>
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.btn-vip').forEach(btn => {
                 btn.addEventListener('click', async () => {
-                    const isLoggedIn = await auth.isLoggedIn();
-                    if (!isLoggedIn) {
-                        utils.showToast('Você precisa estar logado.', 'error');
-                        setTimeout(() => window.location.href = '/grupo-lista/pages/login.html', 1500);
-                        return;
+                    try {
+                        const isLoggedIn = await auth.isLoggedIn();
+                        if (!isLoggedIn) {
+                            utils.showToast('Você precisa estar logado para contratar planos VIP.', 'error');
+                            setTimeout(() => window.location.href = 'login.html', 1500);
+                            return;
+                        }
+                        
+                        alert('Funcionalidade de pagamento em desenvolvimento. Em breve, você poderá contratar o plano ' + btn.dataset.plan + '!');
+                    } catch (error) {
+                        console.error('Erro ao processar clique VIP:', error);
                     }
-                    alert('Funcionalidade de pagamento em desenvolvimento. Em breve, você poderá contratar o plano ' + btn.dataset.plan + '!');
                 });
             });
         });
     </script>
+    
     <style>
         .vip-plans-section { padding: 60px 0; background-color: #f9f9f9; }
         .section-header { text-align: center; margin-bottom: 50px; }
@@ -111,7 +117,10 @@
         .vip-plan-features ul li { margin-bottom: 15px; padding-left: 25px; position: relative; }
         .vip-plan-features ul li:before { content: "✓"; position: absolute; left: 0; color: var(--success-color); font-weight: bold; }
         .vip-plan-action { text-align: center; }
-        @media (max-width: 768px) { .vip-plan.featured { transform: scale(1); } }
+        
+        @media (max-width: 768px) {
+            .vip-plan.featured { transform: scale(1); }
+        }
     </style>
 </body>
 </html>
