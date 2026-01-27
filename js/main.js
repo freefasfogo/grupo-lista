@@ -2,127 +2,213 @@
 const utils = {
     showToast(message, type = 'success') {
         try {
+            // Remover toasts antigos
+            document.querySelectorAll('.toast').forEach(toast => {
+                if (toast.parentNode) {
+                    document.body.removeChild(toast);
+                }
+            });
+            
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = message;
-            
             document.body.appendChild(toast);
             
+            // Forçar reflow para animação
             toast.offsetHeight;
             
-            setTimeout(() => toast.classList.add('show'), 10);
+            // Mostrar toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // Esconder e remover após 3 segundos
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => {
-                    if (toast.parentNode) document.body.removeChild(toast);
+                    if (toast.parentNode) {
+                        document.body.removeChild(toast);
+                    }
                 }, 300);
             }, 3000);
         } catch (error) {
             console.error('Erro ao mostrar toast:', error);
         }
+    },
+    
+    // Obter parâmetro da URL
+    getUrlParam(param) {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        } catch (error) {
+            console.error('Erro ao obter parâmetro URL:', error);
+            return null;
+        }
     }
 };
 
-// Funções para formulários
-const forms = {
-    initLoginForm() {
-        const form = document.getElementById('login-form');
-        if (!form) return;
-        
-        form.addEventListener('submit', async (e) => {
+// Inicialização quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Sistema iniciando...');
+    
+    // Configurar logout manualmente
+    const setupLogout = () => {
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            // Remover event listeners antigos
+            const newLogoutLink = logoutLink.cloneNode(true);
+            logoutLink.parentNode.replaceChild(newLogoutLink, logoutLink);
+            
+            // Adicionar novo listener
+            newLogoutLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                console.log('Clicou em logout');
+                
+                const success = await auth.logout();
+                if (success) {
+                    utils.showToast('Logout realizado com sucesso!', 'success');
+                    
+                    // Atualizar UI
+                    setTimeout(() => {
+                        auth.updateAuthUI();
+                    }, 100);
+                    
+                    // Redirecionar
+                    setTimeout(() => {
+                        const isInPages = window.location.pathname.includes('pages');
+                        window.location.href = isInPages ? '../index.html' : 'index.html';
+                    }, 1000);
+                } else {
+                    utils.showToast('Erro ao fazer logout', 'error');
+                }
+            });
+        }
+    };
+    
+    // Configurar formulário de login
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const formData = new FormData(form);
-            const email = formData.get('email');
-            const password = formData.get('password');
+            const email = loginForm.querySelector('#login-email').value;
+            const password = loginForm.querySelector('#login-password').value;
             
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Entrando...';
+            const btn = loginForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Entrando...';
             
             try {
                 const result = await auth.login(email, password);
-                
                 if (result.success) {
                     utils.showToast('Login realizado com sucesso!', 'success');
                     setTimeout(() => {
                         window.location.href = '../index.html';
                     }, 1000);
                 } else {
-                    utils.showToast(result.error || 'Erro ao fazer login', 'error');
+                    utils.showToast(result.error, 'error');
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro no login:', error);
                 utils.showToast('Erro ao fazer login', 'error');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         });
-    },
+    }
     
-    initRegisterForm() {
-        const form = document.getElementById('register-form');
-        if (!form) return;
-        
-        form.addEventListener('submit', async (e) => {
+    // Configurar formulário de registro
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const formData = new FormData(form);
-            const email = formData.get('email');
-            const password = formData.get('password');
-            const confirmPassword = formData.get('confirm_password');
+            const email = registerForm.querySelector('#register-email').value;
+            const password = registerForm.querySelector('#register-password').value;
+            const confirmPassword = registerForm.querySelector('#confirm-password').value;
             
+            // Validações
             if (password !== confirmPassword) {
                 utils.showToast('As senhas não coincidem', 'error');
                 return;
             }
             
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Cadastrando...';
+            if (password.length < 6) {
+                utils.showToast('A senha deve ter pelo menos 6 caracteres', 'error');
+                return;
+            }
+            
+            const btn = registerForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Cadastrando...';
             
             try {
                 const result = await auth.register(email, password);
-                
                 if (result.success) {
                     utils.showToast('Cadastro realizado! Verifique seu e-mail.', 'success');
-                    form.reset();
+                    registerForm.reset();
                     setTimeout(() => {
                         window.location.href = '../index.html';
                     }, 3000);
                 } else {
-                    utils.showToast(result.error || 'Erro ao cadastrar', 'error');
+                    utils.showToast(result.error, 'error');
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro no registro:', error);
                 utils.showToast('Erro ao cadastrar', 'error');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         });
     }
-};
-
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM carregado...');
     
-    // Inicializar formulários
-    forms.initLoginForm();
-    forms.initRegisterForm();
+    // Aguardar Supabase estar pronto
+    const waitForSupabase = () => {
+        return new Promise((resolve) => {
+            const check = () => {
+                if (window.supabaseClient && window.auth) {
+                    resolve(true);
+                } else {
+                    setTimeout(check, 100);
+                }
+            };
+            check();
+        });
+    };
     
-    // Atualizar UI de auth
-    if (auth.updateAuthUI) {
-        auth.updateAuthUI();
+    // Inicializar sistema
+    try {
+        await waitForSupabase();
+        
+        console.log('✅ Supabase pronto');
+        
+        // Configurar logout
+        setupLogout();
+        
+        // Atualizar UI inicial
+        await auth.updateAuthUI();
+        
+        // Se estiver na página de login e já estiver logado, redirecionar
+        if (window.location.pathname.includes('login.html')) {
+            const isLoggedIn = await auth.isLoggedIn();
+            if (isLoggedIn) {
+                console.log('Já logado, redirecionando...');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 500);
+            }
+        }
+        
+        console.log('✅ Sistema inicializado com sucesso');
+    } catch (error) {
+        console.error('Erro na inicialização:', error);
     }
-    
-    console.log('Inicialização completa');
 });
 
-// Exportar
+// Exportar para uso global
 window.utils = utils;
-window.forms = forms;
