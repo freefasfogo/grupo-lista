@@ -1,132 +1,15 @@
-// Funções de autenticação
-const auth = {
-    // Verificar se o usuário está logado
-    async isLoggedIn() {
-        const { data: { user } } = await supabase.auth.getUser();
-        return !!user;
-    },
-    
-    // Obter usuário atual
-    async getCurrentUser() {
-        const { data: { user } } = await supabase.auth.getUser();
-        return user;
-    },
-    
-    // Verificar se o usuário é admin
-    async isAdmin() {
-        const user = await this.getCurrentUser();
-        if (!user) return false;
-        
-        const profile = await db.getUserProfile(user.id);
-        return profile && profile.role === 'admin';
-    },
-    
-    // Login
-    async login(email, password) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
-        
-        if (error) {
-            console.error('Erro ao fazer login:', error);
-            return { success: false, error: error.message };
-        }
-        
-        return { success: true, user: data.user };
-    },
-    
-    // Registro
-    async register(email, password) {
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password
-        });
-        
-        if (error) {
-            console.error('Erro ao registrar:', error);
-            return { success: false, error: error.message };
-        }
-        
-        // Criar perfil do usuário
-        if (data.user) {
-            await supabase.from('users').insert({
-                id: data.user.id,
-                email: data.user.email,
-                role: 'user'
-            });
-        }
-        
-        return { success: true, user: data.user };
-    },
-    
-    // Logout
-    async logout() {
-        const { error } = await supabase.auth.signOut();
-        
-        if (error) {
-            console.error('Erro ao fazer logout:', error);
-            return false;
-        }
-        
-        return true;
-    },
-    
-    // Redirecionar se não estiver logado
-    async requireAuth(redirectUrl = '/pages/login.html') {
-        const isLoggedIn = await this.isLoggedIn();
-        if (!isLoggedIn) {
-            window.location.href = redirectUrl;
-            return false;
-        }
-        return true;
-    },
-    
-    // Redirecionar se não for admin
-    async requireAdmin(redirectUrl = '/pages/login.html') {
-        const isAdmin = await this.isAdmin();
-        if (!isAdmin) {
-            window.location.href = redirectUrl;
-            return false;
-        }
-        return true;
-    },
-    
-    // Atualizar UI com base no estado de autenticação
-    async updateAuthUI() {
-        const isLoggedIn = await this.isLoggedIn();
-        const isAdmin = await this.isAdmin();
-        
-        // Elementos de UI
-        const loginLink = document.getElementById('login-link');
-        const registerLink = document.getElementById('register-link');
-        const logoutLink = document.getElementById('logout-link');
-        const profileLink = document.getElementById('profile-link');
-        const adminLink = document.getElementById('admin-link');
-        
-        if (isLoggedIn) {
-            if (loginLink) loginLink.style.display = 'none';
-            if (registerLink) registerLink.style.display = 'none';
-            if (logoutLink) logoutLink.style.display = 'block';
-            if (profileLink) profileLink.style.display = 'block';
-            
-            if (isAdmin && adminLink) {
-                adminLink.style.display = 'block';
-            }
-        } else {
-            if (loginLink) loginLink.style.display = 'block';
-            if (registerLink) registerLink.style.display = 'block';
-            if (logoutLink) logoutLink.style.display = 'none';
-            if (profileLink) profileLink.style.display = 'none';
-            if (adminLink) adminLink.style.display = 'none';
-        }
-    }
+const auth={
+    async isLoggedIn(){const{data:{user}}=await supabase.auth.getUser();return!!user;},
+    async getCurrentUser(){const{data:{user}}=await supabase.auth.getUser();return user;},
+    async isAdmin(){const user=await this.getCurrentUser();if(!user)return false;const profile=await db.getUserProfile(user.id);return profile&&profile.role==='admin';},
+    async login(email,password){const{data,error}=await supabase.auth.signInWithPassword({email,password});if(error){console.error('Erro ao fazer login:',error);return{success:false,error:error.message};}return{success:true,user:data.user};},
+    async register(email,password){const{data,error}=await supabase.auth.signUp({email,password});if(error){console.error('Erro ao registrar:',error);return{success:false,error:error.message};}if(data.user){await supabase.from('users').insert({id:data.user.id,email:data.user.email,role:'user'});}return{success:true,user:data.user};},
+    async logout(){const{error}=await supabase.auth.signOut();if(error){console.error('Erro ao fazer logout:',error);return false;}return true;},
+    async requireAuth(redirectUrl='/pages/login.html'){const isLoggedIn=await this.isLoggedIn();if(!isLoggedIn){window.location.href=redirectUrl;return false;}return true;},
+    async requireAdmin(redirectUrl='/pages/login.html'){const isAdmin=await this.isAdmin();if(!isAdmin){window.location.href=redirectUrl;return false;}return true;},
+    async updateAuthUI(){const isLoggedIn=await this.isLoggedIn();const isAdmin=await this.isAdmin();
+        const elements={login:document.getElementById('login-link'),register:document.getElementById('register-link'),logout:document.getElementById('logout-link'),profile:document.getElementById('profile-link'),admin:document.getElementById('admin-link')};
+        if(isLoggedIn){if(elements.login)elements.login.style.display='none';if(elements.register)elements.register.style.display='none';if(elements.logout)elements.logout.style.display='block';if(elements.profile)elements.profile.style.display='block';if(isAdmin&&elements.admin)elements.admin.style.display='block';}else{if(elements.login)elements.login.style.display='block';if(elements.register)elements.register.style.display='block';if(elements.logout)elements.logout.style.display='none';if(elements.profile)elements.profile.style.display='none';if(elements.admin)elements.admin.style.display='none';}}
 };
-
-// Listener para mudanças de autenticação
-supabase.auth.onAuthStateChange((event, session) => {
-    auth.updateAuthUI();
-});
-
-// Exportar para uso em outros arquivos
-window.auth = auth;
+supabase.auth.onAuthStateChange((event,session)=>{auth.updateAuthUI();});
+window.auth=auth;
