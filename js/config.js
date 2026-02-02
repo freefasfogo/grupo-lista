@@ -1,47 +1,29 @@
-// js/config.js
+// js/config.js - SIMPLIFICADO
 const config = {
-    // URLs base
-    get baseUrl() {
-        return window.location.origin;
-    },
-    
-    // Caminho base do projeto
-    get basePath() {
-        return '/grupo-lista/';
-    },
-    
-    // URLs completas
-    urls: {
-        home: '/grupo-lista/index.html',
-        cadastrar: '/grupo-lista/pages/cadastrar.html',
-        vip: '/grupo-lista/pages/vip.html',
-        admin: '/grupo-lista/pages/admin.html',
-        login: '/grupo-lista/pages/login.html',
-        grupo: '/grupo-lista/pages/grupo.html'
-    },
-    
     // Redirecionar para página
     redirectTo(page) {
-        if (this.urls[page]) {
-            window.location.href = this.urls[page];
+        const pages = {
+            home: '/grupo-lista/index.html',
+            cadastrar: '/grupo-lista/pages/cadastrar.html',
+            vip: '/grupo-lista/pages/vip.html',
+            admin: '/grupo-lista/pages/admin.html',
+            login: '/grupo-lista/pages/login.html',
+            grupo: '/grupo-lista/pages/grupo.html'
+        };
+        
+        if (pages[page]) {
+            window.location.href = pages[page];
         } else {
-            window.location.href = this.urls.home;
+            window.location.href = pages.home;
         }
     },
     
-    // Obter URL completa
-    getUrl(page) {
-        return this.baseUrl + this.urls[page];
-    },
-    
-    // Verificar se está em pages/
-    isInPages() {
-        return window.location.pathname.includes('/pages/');
-    },
-    
-    // Obter caminho relativo seguro
+    // Obter caminho relativo baseado na localização atual
     getRelativePath(page) {
-        if (this.isInPages()) {
+        const currentPath = window.location.pathname;
+        const isInPages = currentPath.includes('/pages/');
+        
+        if (isInPages) {
             // Está em pages/
             const pagesPaths = {
                 home: '../index.html',
