@@ -2,34 +2,67 @@
 const SUPABASE_URL = 'https://nhbctpgmzrnrfulkuhgf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-oGF3MZ-AT3C04L7b2m-OA_PZyi4BSx';
 
-// Inicializar Supabase
+// Inicializar Supabase - versão robusta
 function initSupabase() {
-    if (window.supabaseClient) {
+    console.log('🔄 Inicializando módulo Supabase...');
+    
+    // Se já existe um cliente, usar
+    if (window.supabaseClient && window.supabaseClient.auth) {
+        console.log('✅ Cliente Supabase já está disponível');
         return window.supabaseClient;
     }
     
-    if (window.supabase && window.supabase.createClient) {
-        console.log('Criando cliente Supabase...');
-        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        return window.supabaseClient;
+    // Se não temos a biblioteca, mostrar erro
+    if (typeof supabase === 'undefined') {
+        console.error('❌ Biblioteca Supabase não está disponível');
+        console.log('Verifique se o script foi carregado:', window.supabase);
+        return null;
     }
     
-    console.error('Biblioteca Supabase não carregada');
-    return null;
-}
-
-const supabaseClient = initSupabase();
-
-const db = {
-    // Obter grupos com filtros
-    async getGroups(filters = {}) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return [];
+    try {
+        console.log('📦 Criando novo cliente Supabase...');
+        window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Testar se o cliente foi criado corretamente
+        if (!window.supabaseClient || !window.supabaseClient.auth) {
+            console.error('❌ Cliente Supabase criado, mas auth não disponível');
+            return null;
         }
         
+        console.log('✅ Cliente Supabase criado com sucesso');
+        console.log('🔐 Auth disponível:', !!window.supabaseClient.auth);
+        
+        return window.supabaseClient;
+    } catch (error) {
+        console.error('❌ Erro ao criar cliente Supabase:', error);
+        return null;
+    }
+}
+
+// Inicializar e obter cliente
+const supabaseClient = initSupabase();
+
+// Funções do banco de dados
+const db = {
+    // Obter o cliente de forma segura
+    _getClient() {
+        if (!supabaseClient) {
+            console.warn('⚠️ Cliente Supabase não disponível, tentando inicializar...');
+            const client = initSupabase();
+            if (!client) {
+                throw new Error('Cliente Supabase não disponível');
+            }
+            return client;
+        }
+        return supabaseClient;
+    },
+    
+    // Obter grupos com filtros
+    async getGroups(filters = {}) {
         try {
-            let query = supabaseClient
+            const client = this._getClient();
+            
+            let query = client
                 .from('groups')
                 .select('*, categories(name)')
                 .eq('status', 'approved');
@@ -65,13 +98,10 @@ const db = {
     
     // Obter grupo por ID
     async getGroupById(id) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return null;
-        }
-        
         try {
-            const { data, error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { data, error } = await client
                 .from('groups')
                 .select('*, categories(name)')
                 .eq('id', id)
@@ -91,13 +121,10 @@ const db = {
     
     // Criar novo grupo
     async createGroup(groupData) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return null;
-        }
-        
         try {
-            const { data, error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { data, error } = await client
                 .from('groups')
                 .insert([groupData])
                 .select();
@@ -116,13 +143,10 @@ const db = {
     
     // Atualizar grupo
     async updateGroup(id, groupData) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return null;
-        }
-        
         try {
-            const { data, error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { data, error } = await client
                 .from('groups')
                 .update(groupData)
                 .eq('id', id)
@@ -142,13 +166,10 @@ const db = {
     
     // Deletar grupo
     async deleteGroup(id) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return false;
-        }
-        
         try {
-            const { error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { error } = await client
                 .from('groups')
                 .delete()
                 .eq('id', id);
@@ -167,13 +188,10 @@ const db = {
     
     // Obter categorias
     async getCategories() {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return [];
-        }
-        
         try {
-            const { data, error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { data, error } = await client
                 .from('categories')
                 .select('*')
                 .order('name');
@@ -193,13 +211,10 @@ const db = {
     
     // Criar categoria
     async createCategory(categoryData) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return null;
-        }
-        
         try {
-            const { data, error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { data, error } = await client
                 .from('categories')
                 .insert([categoryData])
                 .select();
@@ -218,13 +233,10 @@ const db = {
     
     // Deletar categoria
     async deleteCategory(id) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return false;
-        }
-        
         try {
-            const { error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { error } = await client
                 .from('categories')
                 .delete()
                 .eq('id', id);
@@ -243,20 +255,17 @@ const db = {
     
     // Verificar se usuário é admin
     async isAdmin() {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return false;
-        }
-        
         try {
-            const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+            const client = this._getClient();
+            
+            const { data: { user }, error: authError } = await client.auth.getUser();
             
             if (authError || !user) {
                 console.log('Usuário não autenticado');
                 return false;
             }
             
-            const { data: profile, error: profileError } = await supabaseClient
+            const { data: profile, error: profileError } = await client
                 .from('users')
                 .select('role')
                 .eq('id', user.id)
@@ -277,13 +286,10 @@ const db = {
     
     // Obter perfil do usuário
     async getUserProfile(userId) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return null;
-        }
-        
         try {
-            const { data, error } = await supabaseClient
+            const client = this._getClient();
+            
+            const { data, error } = await client
                 .from('users')
                 .select('*')
                 .eq('id', userId)
@@ -303,14 +309,11 @@ const db = {
     
     // Incrementar visualizações
     async incrementViews(id) {
-        if (!supabaseClient) {
-            console.error('Cliente Supabase não disponível');
-            return false;
-        }
-        
         try {
+            const client = this._getClient();
+            
             // Primeiro obtém o valor atual
-            const { data: group, error: fetchError } = await supabaseClient
+            const { data: group, error: fetchError } = await client
                 .from('groups')
                 .select('views')
                 .eq('id', id)
@@ -321,7 +324,7 @@ const db = {
             const newViews = (group.views || 0) + 1;
             
             // Atualiza com o novo valor
-            const { error: updateError } = await supabaseClient
+            const { error: updateError } = await client
                 .from('groups')
                 .update({ views: newViews })
                 .eq('id', id);
@@ -338,23 +341,27 @@ const db = {
 
 // Exportar para uso global
 window.db = db;
-window.supabaseClient = supabaseClient;
 
-// Testar conexão
-if (supabaseClient) {
-    console.log('Testando conexão Supabase...');
-    supabaseClient.from('categories').select('*').limit(1)
-        .then(result => {
-            if (result.error) {
-                console.error('Erro na conexão:', result.error.message);
-            } else {
-                console.log('✅ Conexão Supabase estabelecida');
-                console.log('Auth disponível:', !!supabaseClient.auth);
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao testar conexão:', error);
-        });
-} else {
-    console.warn('Cliente Supabase não disponível para teste');
-}
+// Testar conexão quando tudo estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (supabaseClient) {
+            console.log('🔍 Testando conexão Supabase...');
+            supabaseClient.from('categories').select('*').limit(1)
+                .then(result => {
+                    if (result.error) {
+                        console.error('❌ Erro na conexão:', result.error.message);
+                    } else {
+                        console.log('✅ Conexão Supabase estabelecida com sucesso');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Erro ao testar conexão:', error);
+                });
+        } else {
+            console.warn('⚠️ Cliente Supabase não disponível para teste');
+        }
+    }, 1000); // Aguardar 1 segundo para tudo carregar
+});
+
+console.log('📦 Módulo Supabase carregado');
