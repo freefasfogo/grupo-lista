@@ -1,12 +1,29 @@
-// js/forms.js
+// js/forms.js - CORRIGIDO
 const forms = {
     // Carregar categorias
     async loadCategories(selectId = 'category') {
         try {
+            console.log('Carregando categorias...');
             const select = document.getElementById(selectId);
-            if (!select) return;
+            if (!select) {
+                console.log('Select não encontrado:', selectId);
+                return;
+            }
+            
+            // Verificar se db está disponível
+            if (!window.db) {
+                console.error('DB não disponível');
+                select.innerHTML = '<option value="">Erro ao carregar</option>';
+                return;
+            }
             
             const categories = await db.getCategories();
+            console.log('Categorias obtidas:', categories);
+            
+            if (!categories || categories.length === 0) {
+                select.innerHTML = '<option value="">Nenhuma categoria</option>';
+                return;
+            }
             
             let options = '<option value="">Selecione uma categoria</option>';
             categories.forEach(cat => {
@@ -14,15 +31,23 @@ const forms = {
             });
             
             select.innerHTML = options;
+            console.log('Categorias carregadas no select');
         } catch (error) {
             console.error('Erro ao carregar categorias:', error);
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
         }
     },
     
     // Inicializar formulário de grupo
     async initGroupForm() {
         const form = document.getElementById('group-form');
-        if (!form) return;
+        if (!form) {
+            console.log('Formulário de grupo não encontrado');
+            return;
+        }
         
         console.log('📝 Inicializando formulário de grupo');
         
@@ -39,7 +64,11 @@ const forms = {
             const isLoggedIn = await auth.isLoggedIn();
             if (!isLoggedIn) {
                 utils.showToast('Faça login para cadastrar um grupo', 'error');
-                config.redirectTo('login');
+                if (window.config) {
+                    window.config.redirectTo('login');
+                } else {
+                    window.location.href = 'login.html';
+                }
                 return;
             }
             
@@ -56,10 +85,17 @@ const forms = {
                 views: 0
             };
             
+            console.log('Dados do grupo:', groupData);
+            
             // Validação
             if (!groupData.name || !groupData.platform || !groupData.category || 
                 !groupData.description || !groupData.invite_link) {
                 utils.showToast('Preencha todos os campos', 'error');
+                return;
+            }
+            
+            if (!groupData.invite_link.startsWith('http')) {
+                utils.showToast('Insira um link válido (http:// ou https://)', 'error');
                 return;
             }
             
@@ -73,11 +109,15 @@ const forms = {
                 const result = await db.createGroup(groupData);
                 
                 if (result) {
-                    utils.showToast('Grupo cadastrado com sucesso!', 'success');
+                    utils.showToast('Grupo cadastrado com sucesso! Aguarde aprovação.', 'success');
                     form.reset();
                     
                     setTimeout(() => {
-                        config.redirectTo('home');
+                        if (window.config) {
+                            window.config.redirectTo('home');
+                        } else {
+                            window.location.href = '../index.html';
+                        }
                     }, 2000);
                 } else {
                     utils.showToast('Erro ao cadastrar grupo', 'error');
@@ -103,6 +143,11 @@ const forms = {
             const email = form.querySelector('#login-email').value;
             const password = form.querySelector('#login-password').value;
             
+            if (!email || !password) {
+                utils.showToast('Preencha email e senha', 'error');
+                return;
+            }
+            
             const button = form.querySelector('button[type="submit"]');
             const originalText = button.textContent;
             button.disabled = true;
@@ -112,12 +157,19 @@ const forms = {
                 const result = await auth.login(email, password);
                 
                 if (result.success) {
-                    utils.showToast('Login realizado!', 'success');
-                    setTimeout(() => config.redirectTo('home'), 1000);
+                    utils.showToast('Login realizado com sucesso!', 'success');
+                    setTimeout(() => {
+                        if (window.config) {
+                            window.config.redirectTo('home');
+                        } else {
+                            window.location.href = '../index.html';
+                        }
+                    }, 1000);
                 } else {
-                    utils.showToast(result.error, 'error');
+                    utils.showToast(result.error || 'Erro no login', 'error');
                 }
             } catch (error) {
+                console.error('Erro:', error);
                 utils.showToast('Erro inesperado', 'error');
             } finally {
                 button.disabled = false;
@@ -139,6 +191,11 @@ const forms = {
             const confirmPassword = form.querySelector('#confirm-password').value;
             
             // Validação
+            if (!email || !password || !confirmPassword) {
+                utils.showToast('Preencha todos os campos', 'error');
+                return;
+            }
+            
             if (password !== confirmPassword) {
                 utils.showToast('Senhas não coincidem', 'error');
                 return;
@@ -160,11 +217,18 @@ const forms = {
                 if (result.success) {
                     utils.showToast('Cadastro realizado! Verifique seu email.', 'success');
                     form.reset();
-                    setTimeout(() => config.redirectTo('home'), 3000);
+                    setTimeout(() => {
+                        if (window.config) {
+                            window.config.redirectTo('home');
+                        } else {
+                            window.location.href = '../index.html';
+                        }
+                    }, 3000);
                 } else {
-                    utils.showToast(result.error, 'error');
+                    utils.showToast(result.error || 'Erro no cadastro', 'error');
                 }
             } catch (error) {
+                console.error('Erro:', error);
                 utils.showToast('Erro inesperado', 'error');
             } finally {
                 button.disabled = false;
