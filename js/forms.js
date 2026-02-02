@@ -94,4 +94,84 @@ const forms = {
     
     // Inicializar formulário de login
     initLoginForm() {
-        const form = document.getElementById('login-form
+        const form = document.getElementById('login-form');
+        if (!form) return;
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = form.querySelector('#login-email').value;
+            const password = form.querySelector('#login-password').value;
+            
+            const button = form.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Entrando...';
+            
+            try {
+                const result = await auth.login(email, password);
+                
+                if (result.success) {
+                    utils.showToast('Login realizado!', 'success');
+                    setTimeout(() => config.redirectTo('home'), 1000);
+                } else {
+                    utils.showToast(result.error, 'error');
+                }
+            } catch (error) {
+                utils.showToast('Erro inesperado', 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        });
+    },
+    
+    // Inicializar formulário de registro
+    initRegisterForm() {
+        const form = document.getElementById('register-form');
+        if (!form) return;
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = form.querySelector('#register-email').value;
+            const password = form.querySelector('#register-password').value;
+            const confirmPassword = form.querySelector('#confirm-password').value;
+            
+            // Validação
+            if (password !== confirmPassword) {
+                utils.showToast('Senhas não coincidem', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                utils.showToast('Senha precisa ter 6+ caracteres', 'error');
+                return;
+            }
+            
+            const button = form.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Cadastrando...';
+            
+            try {
+                const result = await auth.register(email, password);
+                
+                if (result.success) {
+                    utils.showToast('Cadastro realizado! Verifique seu email.', 'success');
+                    form.reset();
+                    setTimeout(() => config.redirectTo('home'), 3000);
+                } else {
+                    utils.showToast(result.error, 'error');
+                }
+            } catch (error) {
+                utils.showToast('Erro inesperado', 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        });
+    }
+};
+
+window.forms = forms;
