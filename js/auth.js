@@ -1,81 +1,77 @@
-// Funções de autenticação
+// js/auth.js
 const auth = {
-    // Verificar se cliente está disponível
-    _checkClient() {
-        if (!window.supabaseClient || !window.supabaseClient.auth) {
-            console.warn('Cliente Supabase não disponível');
-            return false;
+    // Obter cliente Supabase
+    _client() {
+        if (!window.supabaseClient) {
+            console.warn('Supabase não disponível');
+            return null;
         }
-        return true;
+        return window.supabaseClient;
     },
     
     // Login
     async login(email, password) {
-        if (!this._checkClient()) {
-            return { success: false, error: 'Sistema de autenticação não disponível' };
-        }
-        
         try {
-            console.log('Tentando login com:', email);
-            const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+            const client = this._client();
+            if (!client) {
+                return { success: false, error: 'Sistema indisponível' };
+            }
+            
+            const { data, error } = await client.auth.signInWithPassword({
                 email,
                 password
             });
             
             if (error) {
-                console.error('Erro no login:', error.message);
                 return { success: false, error: error.message };
             }
             
-            console.log('✅ Login bem-sucedido');
             return { success: true, user: data.user };
         } catch (error) {
-            console.error('Erro inesperado no login:', error);
-            return { success: false, error: 'Erro inesperado no login' };
+            console.error('Erro no login:', error);
+            return { success: false, error: 'Erro inesperado' };
         }
     },
     
     // Registro
     async register(email, password) {
-        if (!this._checkClient()) {
-            return { success: false, error: 'Sistema de autenticação não disponível' };
-        }
-        
         try {
-            console.log('Tentando registrar:', email);
-            const { data, error } = await window.supabaseClient.auth.signUp({
+            const client = this._client();
+            if (!client) {
+                return { success: false, error: 'Sistema indisponível' };
+            }
+            
+            const { data, error } = await client.auth.signUp({
                 email,
                 password,
                 options: {
-                    emailRedirectTo: window.location.origin + '/pages/login.html'
+                    emailRedirectTo: window.location.origin + '/grupo-lista/pages/login.html'
                 }
             });
             
             if (error) {
-                console.error('Erro no registro:', error.message);
                 return { success: false, error: error.message };
             }
             
-            console.log('✅ Registro bem-sucedido');
             return { success: true, user: data.user };
         } catch (error) {
-            console.error('Erro inesperado no registro:', error);
-            return { success: false, error: 'Erro inesperado no registro' };
+            console.error('Erro no registro:', error);
+            return { success: false, error: 'Erro inesperado' };
         }
     },
     
     // Logout
     async logout() {
-        if (!this._checkClient()) return false;
-        
         try {
-            console.log('Fazendo logout...');
-            const { error } = await window.supabaseClient.auth.signOut();
+            const client = this._client();
+            if (!client) return false;
+            
+            const { error } = await client.auth.signOut();
             if (error) {
-                console.error('Erro no logout:', error.message);
+                console.error('Erro no logout:', error);
                 return false;
             }
-            console.log('✅ Logout bem-sucedido');
+            
             return true;
         } catch (error) {
             console.error('Erro inesperado no logout:', error);
@@ -83,32 +79,43 @@ const auth = {
         }
     },
     
-    // Verificar se usuário está logado
+    // Verificar se está logado
     async isLoggedIn() {
-        if (!this._checkClient()) return false;
-        
         try {
-            const { data: { user }, error } = await window.supabaseClient.auth.getUser();
-            if (error) {
-                console.error('Erro ao verificar autenticação:', error.message);
-                return false;
-            }
+            const client = this._client();
+            if (!client) return false;
+            
+            const { data: { user }, error } = await client.auth.getUser();
+            if (error) return false;
+            
             return !!user;
         } catch (error) {
-            console.error('Erro inesperado:', error);
+            console.error('Erro ao verificar login:', error);
             return false;
+        }
+    },
+    
+    // Obter usuário atual
+    async getCurrentUser() {
+        try {
+            const client = this._client();
+            if (!client) return null;
+            
+            const { data: { user } } = await client.auth.getUser();
+            return user;
+        } catch (error) {
+            console.error('Erro ao obter usuário:', error);
+            return null;
         }
     },
     
     // Atualizar UI de autenticação
     async updateAuthUI() {
         try {
-            console.log('Atualizando UI de autenticação...');
-            
             const isLoggedIn = await this.isLoggedIn();
-            console.log('Usuário logado:', isLoggedIn);
+            const isAdmin = await db.isAdmin();
             
-            // Elementos da UI
+            // Elementos
             const elements = {
                 login: document.getElementById('login-link'),
                 register: document.getElementById('register-link'),
@@ -116,62 +123,32 @@ const auth = {
                 admin: document.getElementById('admin-link')
             };
             
+            // Atualizar display
             if (isLoggedIn) {
-                console.log('Configurando UI para usuário LOGADO');
-                if (elements.login) {
-                    elements.login.style.display = 'none';
-                    console.log('Login link escondido');
-                }
-                if (elements.register) {
-                    elements.register.style.display = 'none';
-                    console.log('Register link escondido');
-                }
-                if (elements.logout) {
-                    elements.logout.style.display = 'block';
-                    console.log('Logout link mostrado');
+                if (elements.login) elements.login.style.display = 'none';
+                if (elements.register) elements.register.style.display = 'none';
+                if (elements.logout) elements.logout.style.display = 'block';
+                if (elements.admin) {
+                    elements.admin.style.display = isAdmin ? 'block' : 'none';
                 }
             } else {
-                console.log('Configurando UI para usuário NÃO LOGADO');
-                if (elements.login) {
-                    elements.login.style.display = 'block';
-                    console.log('Login link mostrado');
-                }
-                if (elements.register) {
-                    elements.register.style.display = 'block';
-                    console.log('Register link mostrado');
-                }
-                if (elements.logout) {
-                    elements.logout.style.display = 'none';
-                    console.log('Logout link escondido');
-                }
-                if (elements.admin) {
-                    elements.admin.style.display = 'none';
-                }
+                if (elements.login) elements.login.style.display = 'block';
+                if (elements.register) elements.register.style.display = 'block';
+                if (elements.logout) elements.logout.style.display = 'none';
+                if (elements.admin) elements.admin.style.display = 'none';
             }
-            
-            console.log('UI atualizada com sucesso');
         } catch (error) {
             console.error('Erro ao atualizar UI:', error);
         }
     }
 };
 
-// Configurar listener de mudança de autenticação
-if (window.supabaseClient && window.supabaseClient.auth) {
-    window.supabaseClient.auth.onAuthStateChange((event, session) => {
-        console.log('📢 Estado de autenticação mudou:', event);
-        console.log('Sessão:', session ? 'ativa' : 'inativa');
-        
-        // Forçar atualização da UI
-        setTimeout(() => {
-            auth.updateAuthUI();
-        }, 500);
+// Configurar listener de auth
+if (window.supabaseClient) {
+    window.supabaseClient.auth.onAuthStateChange(() => {
+        auth.updateAuthUI();
     });
-    
-    console.log('Listener de auth state configurado');
-} else {
-    console.warn('Não foi possível configurar listener de auth state');
 }
 
-// Exportar para uso global
+// Exportar
 window.auth = auth;
