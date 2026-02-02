@@ -131,3 +131,44 @@
                     attempts++;
                     
                     if (window.supabase && window.supabase.createClient) {
+                        console.log('📚 Biblioteca Supabase carregada');
+                        try {
+                            const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                            resolve(client);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } else if (attempts >= maxAttempts) {
+                        reject(new Error('Timeout ao carregar Supabase'));
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                };
+                
+                check();
+            });
+        }
+        
+        waitForSupabase()
+            .then(client => {
+                window.supabaseClient = client;
+                console.log('✅ Cliente Supabase criado com sucesso');
+                console.log('🔐 Auth disponível:', !!client.auth);
+            })
+            .catch(error => {
+                console.error('❌ Falha ao inicializar Supabase:', error);
+            });
+    })();
+    </script>
+
+    <!-- Scripts principais -->
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <!-- NÃO adicione forms.js aqui - só na página de cadastro -->
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
