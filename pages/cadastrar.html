@@ -41,7 +41,7 @@
                                 <div class="form-group"><label for="name">Nome do Grupo</label><input type="text" id="name" name="name" class="form-control" required></div>
                                 <div class="form-group"><label for="platform">Plataforma</label><select id="platform" name="platform" class="form-control" required><option value="">Selecione</option><option value="WhatsApp">WhatsApp</option><option value="Telegram">Telegram</option><option value="Discord">Discord</option></select></div>
                             </div>
-                            <div class="form-group"><label for="category">Categoria</label><select id="category" name="category" class="form-control" required><option value="">Selecione uma categoria</option></select></div>
+                            <div class="form-group"><label for="category">Categoria</label><select id="category" name="category" class="form-control" required><option value="">Carregando categorias...</option></select></div>
                             <div class="form-group"><label for="description">Descrição</label><textarea id="description" name="description" class="form-control" rows="5" required></textarea></div>
                             <div class="form-group"><label for="invite_link">Link de Convite</label><input type="url" id="invite_link" name="invite_link" class="form-control" placeholder="https://chat.whatsapp.com/..." required></div>
                             <div class="form-group"><button type="submit" class="btn btn-primary">Cadastrar Grupo</button></div>
@@ -58,29 +58,6 @@
             </div>
         </div>
     </section>
-    <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        // Aguardar Supabase estar pronto
-        await new Promise(resolve => {
-            const check = () => {
-                if (window.supabaseClient && window.auth && window.db && window.forms) {
-                    resolve();
-                } else {
-                    setTimeout(check, 100);
-                }
-            };
-            check();
-        });
-        
-        console.log('✅ Todos os scripts carregados, inicializando formulário...');
-        
-        // Inicializar formulário
-        await forms.initGroupForm();
-        
-        // Atualizar UI de autenticação
-        await auth.updateAuthUI();
-    });
-</script>
 
     <footer>
         <div class="container">
@@ -148,9 +125,37 @@
     <script src="../js/supabase.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/main.js"></script>
+    <!-- Apenas na página de cadastro: -->
+    <script src="../js/forms.js"></script>
 
     <script>
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('📝 Inicializando página de cadastro...');
+            
+            // Aguardar todos os módulos estarem prontos
+            await new Promise(resolve => {
+                const check = () => {
+                    if (window.supabaseClient && window.auth && window.db && window.forms && window.utils) {
+                        console.log('✅ Todos os módulos carregados');
+                        resolve();
+                    } else {
+                        console.log('Aguardando módulos...');
+                        setTimeout(check, 100);
+                    }
+                };
+                check();
+            });
+            
+            // Inicializar formulário
+            await forms.initGroupForm();
+            
+            // Atualizar UI de autenticação
+            await auth.updateAuthUI();
+            
+            console.log('✅ Página de cadastro inicializada');
+        });
     </script>
 </body>
 </html>
