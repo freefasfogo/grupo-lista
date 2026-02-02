@@ -32,6 +32,9 @@
             tabContents.forEach(content => content.classList.remove('active'));
             document.querySelector('[data-tab="register"]').classList.add('active');
             document.getElementById('register-tab').classList.add('active');
+                const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
         }
         
         tabBtns.forEach(btn => {
