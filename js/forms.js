@@ -1,10 +1,13 @@
 // js/forms.js
 const forms = {
     // Carregar categorias no select
-    async loadCategories() {
+    async loadCategories(selectId = 'category') {
         try {
-            const categorySelect = document.getElementById('category');
-            if (!categorySelect) return;
+            const categorySelect = document.getElementById(selectId);
+            if (!categorySelect) {
+                console.log('Select de categoria não encontrado:', selectId);
+                return;
+            }
             
             console.log('Carregando categorias...');
             
@@ -22,6 +25,7 @@ const forms = {
             });
             
             categorySelect.innerHTML = options;
+            console.log('Categorias carregadas no select');
             
         } catch (error) {
             console.error('Erro ao carregar categorias:', error);
@@ -31,7 +35,12 @@ const forms = {
     // Configurar formulário de cadastro de grupo
     async initGroupForm() {
         const form = document.getElementById('group-form');
-        if (!form) return;
+        if (!form) {
+            console.log('Formulário de grupo não encontrado');
+            return;
+        }
+        
+        console.log('Inicializando formulário de grupo...');
         
         // Carregar categorias
         await this.loadCategories();
@@ -46,7 +55,7 @@ const forms = {
             const isLoggedIn = await auth.isLoggedIn();
             if (!isLoggedIn) {
                 utils.showToast('Você precisa estar logado para cadastrar um grupo.', 'error');
-                window.location.href = 'login.html';
+                window.location.href = 'pages/login.html';
                 return;
             }
             
@@ -99,10 +108,97 @@ const forms = {
                 }
             } catch (error) {
                 console.error('Erro ao cadastrar grupo:', error);
-                utils.showToast('Erro: ' + error.message, 'error');
+                utils.showToast('Erro ao cadastrar grupo.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
+            }
+        });
+        
+        console.log('Formulário de grupo inicializado');
+    },
+    
+    // Configurar formulário de login
+    initLoginForm() {
+        const form = document.getElementById('login-form');
+        if (!form) return;
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = form.querySelector('#login-email').value;
+            const password = form.querySelector('#login-password').value;
+            
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Entrando...';
+            
+            try {
+                const result = await auth.login(email, password);
+                if (result.success) {
+                    utils.showToast('Login realizado com sucesso!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                } else {
+                    utils.showToast(result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                utils.showToast('Erro ao fazer login', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    },
+    
+    // Configurar formulário de registro
+    initRegisterForm() {
+        const form = document.getElementById('register-form');
+        if (!form) return;
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = form.querySelector('#register-email').value;
+            const password = form.querySelector('#register-password').value;
+            const confirmPassword = form.querySelector('#confirm-password').value;
+            
+            // Validações
+            if (password !== confirmPassword) {
+                utils.showToast('As senhas não coincidem', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                utils.showToast('A senha deve ter pelo menos 6 caracteres', 'error');
+                return;
+            }
+            
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Cadastrando...';
+            
+            try {
+                const result = await auth.register(email, password);
+                if (result.success) {
+                    utils.showToast('Cadastro realizado! Verifique seu e-mail.', 'success');
+                    form.reset();
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 3000);
+                } else {
+                    utils.showToast(result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Erro no registro:', error);
+                utils.showToast('Erro ao cadastrar', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         });
     }
