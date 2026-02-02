@@ -111,71 +111,23 @@
 
     <!-- Script de inicialização do Supabase -->
     <script>
-    // Inicialização garantida do Supabase
     (function() {
         console.log('🔧 Inicializando Supabase...');
         
-        // Configuração
         const SUPABASE_URL = 'https://nhbctpgmzrnrfulkuhgf.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_-oGF3MZ-AT3C04L7b2m-OA_PZyi4BSx';
         
-        // Se já temos um cliente, usar
         if (window.supabaseClient) {
             console.log('✅ Cliente Supabase já existe');
             return;
         }
         
-        // Aguardar a biblioteca carregar
         function waitForSupabase() {
             return new Promise((resolve, reject) => {
                 let attempts = 0;
-                const maxAttempts = 50; // 5 segundos máximo
+                const maxAttempts = 50;
                 
                 const check = () => {
                     attempts++;
                     
                     if (window.supabase && window.supabase.createClient) {
-                        console.log('📚 Biblioteca Supabase carregada');
-                        try {
-                            const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                            resolve(client);
-                        } catch (error) {
-                            reject(error);
-                        }
-                    } else if (attempts >= maxAttempts) {
-                        reject(new Error('Timeout ao carregar Supabase'));
-                    } else {
-                        setTimeout(check, 100);
-                    }
-                };
-                
-                check();
-            });
-        }
-        
-        // Inicializar
-        waitForSupabase()
-            .then(client => {
-                window.supabaseClient = client;
-                console.log('✅ Cliente Supabase criado com sucesso');
-                console.log('🔐 Auth disponível:', !!client.auth);
-            })
-            .catch(error => {
-                console.error('❌ Falha ao inicializar Supabase:', error);
-            });
-    })();
-    </script>
-
-    <!-- Scripts principais - APENAS UMA VEZ! -->
-    <script src="js/supabase.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
-    <!-- Após main.js -->
-<script src="js/forms.js"></script>
-
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
-    
-</body>
-</html>
