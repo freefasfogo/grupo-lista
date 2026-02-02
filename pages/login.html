@@ -1,165 +1,58 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Grupos Lista</title>
-    <meta name="description" content="Faça login em sua conta para cadastrar grupos e acessar recursos exclusivos.">
-    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
-    <link rel="stylesheet" href="../static/css/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="logo"><img src="../images/logo.png" alt="Logo"><span>Grupos Lista</span></div>
-            <nav>
-                <ul>
-                    <li><a href="../index.html">Início</a></li>
-                    <li><a href="cadastrar.html">Cadastrar Grupo</a></li>
-                    <li><a href="vip.html">VIP</a></li>
-                    <li id="admin-link" style="display: none;"><a href="admin.html">Admin</a></li>
-                    <li id="login-link"><a href="login.html">Entrar</a></li>
-                    <li id="register-link" style="display: none;"><a href="login.html#register">Cadastrar</a></li>
-                    <li id="logout-link" style="display: none;"><a href="#">Sair</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<!-- Na seção de scripts do login.html, substitua por: -->
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/forms.js"></script>
 
-    <section class="login-section">
-        <div class="container">
-            <div class="login-container">
-                <div class="login-tabs">
-                    <button class="tab-btn active" data-tab="login">Entrar</button>
-                    <button class="tab-btn" data-tab="register">Cadastrar</button>
-                </div>
-                <div class="login-form-container">
-                    <div id="login-tab" class="tab-content active">
-                        <form id="login-form">
-                            <div class="form-group"><label for="login-email">E-mail</label><input type="email" id="login-email" name="email" class="form-control" required></div>
-                            <div class="form-group"><label for="login-password">Senha</label><input type="password" id="login-password" name="password" class="form-control" required></div>
-                            <div class="form-group"><button type="submit" class="btn btn-primary">Entrar</button></div>
-                        </form>
-                    </div>
-                    <div id="register-tab" class="tab-content">
-                        <form id="register-form">
-                            <div class="form-group"><label for="register-email">E-mail</label><input type="email" id="register-email" name="email" class="form-control" required></div>
-                            <div class="form-group"><label for="register-password">Senha</label><input type="password" id="register-password" name="password" class="form-control" required></div>
-                            <div class="form-group"><label for="confirm-password">Confirmar Senha</label><input type="password" id="confirm-password" name="confirm_password" class="form-control" required></div>
-                            <div class="form-group"><button type="submit" class="btn btn-primary">Cadastrar</button></div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <div class="footer-column"><h3>Sobre Nós</h3><p>Somos uma plataforma dedicada a ajudar pessoas a encontrar e compartilhar os melhores grupos.</p></div>
-            <div class="footer-column"><h3>Links Úteis</h3><ul><li><a href="../index.html">Início</a></li><li><a href="cadastrar.html">Cadastrar Grupo</a></li><li><a href="vip.html">Planos VIP</a></li><li><a href="login.html">Entrar</a></li></ul></div>
-            <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
-            <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
-        </div>
-        <div class="footer-bottom"><p>&copy; <span id="current-year"></span> Grupos Lista. Todos os direitos reservados.</p></div>
-    </footer>
-
-    <!-- Script de inicialização do Supabase -->
-    <script>
-    (function() {
-        console.log('🔧 Inicializando Supabase...');
+<script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        console.log('🔐 Inicializando página de login...');
         
-        const SUPABASE_URL = 'https://nhbctpgmzrnrfulkuhgf.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_-oGF3MZ-AT3C04L7b2m-OA_PZyi4BSx';
+        // Aguardar módulos
+        await new Promise(resolve => {
+            const check = () => {
+                if (window.supabaseClient && window.auth && window.db && window.forms && window.utils) {
+                    resolve();
+                } else {
+                    setTimeout(check, 100);
+                }
+            };
+            check();
+        });
         
-        if (window.supabaseClient) {
-            console.log('✅ Cliente Supabase já existe');
-            return;
+        // Configurar abas
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const hash = window.location.hash;
+        
+        if (hash === '#register') {
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            document.querySelector('[data-tab="register"]').classList.add('active');
+            document.getElementById('register-tab').classList.add('active');
         }
         
-        function waitForSupabase() {
-            return new Promise((resolve, reject) => {
-                let attempts = 0;
-                const maxAttempts = 50;
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
                 
-                const check = () => {
-                    attempts++;
-                    
-                    if (window.supabase && window.supabase.createClient) {
-                        console.log('📚 Biblioteca Supabase carregada');
-                        try {
-                            const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                            resolve(client);
-                        } catch (error) {
-                            reject(error);
-                        }
-                    } else if (attempts >= maxAttempts) {
-                        reject(new Error('Timeout ao carregar Supabase'));
-                    } else {
-                        setTimeout(check, 100);
-                    }
-                };
-                
-                check();
-            });
-        }
-        
-        waitForSupabase()
-            .then(client => {
-                window.supabaseClient = client;
-                console.log('✅ Cliente Supabase criado com sucesso');
-                console.log('🔐 Auth disponível:', !!client.auth);
-            })
-            .catch(error => {
-                console.error('❌ Falha ao inicializar Supabase:', error);
-            });
-    })();
-    </script>
-
-    <!-- Scripts principais -->
-    <script src="../js/supabase.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/main.js"></script>
-
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const hash = window.location.hash;
-            
-            if (hash === '#register') {
-                tabBtns.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.querySelector('[data-tab="register"]').classList.add('active');
-                document.getElementById('register-tab').classList.add('active');
-            }
-            
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tabId = btn.getAttribute('data-tab');
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    btn.classList.add('active');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                    window.location.hash = tabId === 'register' ? 'register' : '';
-                });
+                btn.classList.add('active');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+                window.location.hash = tabId === 'register' ? 'register' : '';
             });
         });
-    </script>
-    
-    <style>
-        .login-section { padding: 60px 0; background-color: #f9f9f9; min-height: calc(100vh - 200px); display: flex; align-items: center; }
-        .login-container { max-width: 500px; margin: 0 auto; background-color: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
-        .login-tabs { display: flex; background-color: #f0f0f0; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-size: 16px; font-weight: 500; cursor: pointer; transition: background-color 0.3s; }
-        .tab-btn.active { background-color: white; color: var(--primary-color); }
-        .login-form-container { padding: 30px; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-    </style>
-</body>
-</html>
+        
+        // Inicializar formulários
+        forms.initLoginForm();
+        forms.initRegisterForm();
+        
+        // Atualizar UI de autenticação
+        await auth.updateAuthUI();
+        
+        console.log('✅ Página de login inicializada');
+    });
+</script>
