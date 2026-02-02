@@ -147,68 +147,85 @@
     </script>
 
     <!-- Scripts principais -->
-    <script src="../js/supabase.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/main.js"></script>
-    <script src="../js/config.js"></script>
-    <script src="../js/forms.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/forms.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🔐 Inicializando página de login...');
-            
-            // Aguardar módulos
-            await new Promise(resolve => {
-                const check = () => {
-                    if (window.forms && window.auth && window.config) {
-                        resolve();
-                    } else {
-                        setTimeout(check, 100);
-                    }
-                };
-                check();
-            });
-            
-            // Configurar abas
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            // Verificar hash
-            if (window.location.hash === '#register') {
-                tabBtns.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                document.querySelector('[data-tab="register"]').classList.add('active');
-                document.getElementById('register-tab').classList.add('active');
-            }
-            
-            // Clique nas abas
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tabId = btn.getAttribute('data-tab');
-                    
-                    // Atualizar abas
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    btn.classList.add('active');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                    
-                    // Atualizar hash
-                    window.location.hash = tabId === 'register' ? 'register' : '';
-                });
-            });
-            
-            // Inicializar formulários
-            forms.initLoginForm();
-            forms.initRegisterForm();
-            
-            // Atualizar UI
-            await auth.updateAuthUI();
-            
-            console.log('✅ Página de login inicializada');
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🔐 Inicializando página de login...');
+    
+    // Aguardar módulos
+    const waitForModules = () => {
+        return new Promise((resolve) => {
+            const check = () => {
+                if (window.forms && window.auth && window.utils) {
+                    resolve();
+                } else {
+                    setTimeout(check, 100);
+                }
+            };
+            check();
         });
-    </script>
+    };
+    
+    await waitForModules();
+    
+    // Configurar abas
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Verificar hash
+    if (window.location.hash === '#register') {
+        tabBtns.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        document.querySelector('[data-tab="register"]').classList.add('active');
+        document.getElementById('register-tab').classList.add('active');
+    }
+    
+    // Clique nas abas
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            
+            // Atualizar abas
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+            
+            // Atualizar hash
+            window.location.hash = tabId === 'register' ? 'register' : '';
+        });
+    });
+    
+    // Inicializar formulários
+    forms.initLoginForm();
+    forms.initRegisterForm();
+    
+    // Atualizar UI
+    await auth.updateAuthUI();
+    
+    // Se já estiver logado, redirecionar
+    const isLoggedIn = await auth.isLoggedIn();
+    if (isLoggedIn) {
+        console.log('Já logado, redirecionando...');
+        setTimeout(() => {
+            if (window.config) {
+                window.config.redirectTo('home');
+            } else {
+                window.location.href = '../index.html';
+            }
+        }, 500);
+    }
+    
+    console.log('✅ Página de login inicializada');
+});
+</script>
     
     <style>
         .login-section {
