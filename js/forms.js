@@ -1,6 +1,13 @@
-// js/forms.js - Atualize a função initGroupForm:
+// No início do forms.js, adicione:
+if (!window.config) {
+    console.warn('Config não carregado, carregando...');
+    // Carregar config dinamicamente se necessário
+    const script = document.createElement('script');
+    script.src = 'js/config.js';
+    document.head.appendChild(script);
+}
 
-// Configurar formulário de cadastro de grupo
+// Depois atualize a função initGroupForm:
 async initGroupForm() {
     const form = document.getElementById('group-form');
     if (!form) {
@@ -24,14 +31,17 @@ async initGroupForm() {
         if (!isLoggedIn) {
             utils.showToast('Você precisa estar logado para cadastrar um grupo.', 'error');
             
-            // Redirecionar para login CORRETAMENTE
-            const currentPath = window.location.pathname;
-            const isInPages = currentPath.includes('pages');
-            
-            if (isInPages) {
-                window.location.href = 'login.html'; // Mesma pasta
+            // Usar config para redirecionamento correto
+            if (window.config) {
+                window.config.redirectTo('login');
             } else {
-                window.location.href = 'pages/login.html'; // Subir um nível
+                // Fallback
+                const currentPath = window.location.pathname;
+                if (currentPath.includes('pages')) {
+                    window.location.href = 'login.html';
+                } else {
+                    window.location.href = 'pages/login.html';
+                }
             }
             return;
         }
@@ -76,15 +86,18 @@ async initGroupForm() {
                 utils.showToast('Grupo cadastrado com sucesso! Aguarde a aprovação.', 'success');
                 form.reset();
                 
-                // Redirecionar após 2 segundos - CORRETAMENTE
+                // Redirecionar após 2 segundos
                 setTimeout(() => {
-                    const currentPath = window.location.pathname;
-                    const isInPages = currentPath.includes('pages');
-                    
-                    if (isInPages) {
-                        window.location.href = '../index.html'; // Voltar para raiz
+                    if (window.config) {
+                        window.config.redirectTo('home');
                     } else {
-                        window.location.href = 'index.html'; // Mesma pasta
+                        // Fallback
+                        const currentPath = window.location.pathname;
+                        if (currentPath.includes('pages')) {
+                            window.location.href = '../index.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
                     }
                 }, 2000);
             } else {
