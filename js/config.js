@@ -1,50 +1,69 @@
 // js/config.js
 const config = {
     // URLs base
-    baseUrl: window.location.origin,
-    
-    // Caminhos relativos
-    paths: {
-        // A partir da raiz
-        root: {
-            home: 'index.html',
-            cadastrar: 'pages/cadastrar.html',
-            vip: 'pages/vip.html',
-            admin: 'pages/admin.html',
-            login: 'pages/login.html',
-            grupo: 'pages/grupo.html'
-        },
-        // A partir de pages/
-        pages: {
-            home: '../index.html',
-            cadastrar: 'cadastrar.html',
-            vip: 'vip.html',
-            admin: 'admin.html',
-            login: 'login.html',
-            grupo: 'grupo.html'
-        }
+    get baseUrl() {
+        return window.location.origin;
     },
     
-    // Obter caminho correto baseado na localização atual
-    getPath(page) {
-        const currentPath = window.location.pathname;
-        const isInPages = currentPath.includes('pages');
-        
-        if (isInPages) {
-            return this.paths.pages[page] || this.paths.pages.home;
-        } else {
-            return this.paths.root[page] || this.paths.root.home;
-        }
+    // Caminho base do projeto
+    get basePath() {
+        return '/grupo-lista/';
+    },
+    
+    // URLs completas
+    urls: {
+        home: '/grupo-lista/index.html',
+        cadastrar: '/grupo-lista/pages/cadastrar.html',
+        vip: '/grupo-lista/pages/vip.html',
+        admin: '/grupo-lista/pages/admin.html',
+        login: '/grupo-lista/pages/login.html',
+        grupo: '/grupo-lista/pages/grupo.html'
     },
     
     // Redirecionar para página
     redirectTo(page) {
-        window.location.href = this.getPath(page);
+        if (this.urls[page]) {
+            window.location.href = this.urls[page];
+        } else {
+            window.location.href = this.urls.home;
+        }
     },
     
     // Obter URL completa
-    getFullUrl(page) {
-        return `${this.baseUrl}/${this.getPath(page)}`.replace(/\/\//g, '/');
+    getUrl(page) {
+        return this.baseUrl + this.urls[page];
+    },
+    
+    // Verificar se está em pages/
+    isInPages() {
+        return window.location.pathname.includes('/pages/');
+    },
+    
+    // Obter caminho relativo seguro
+    getRelativePath(page) {
+        if (this.isInPages()) {
+            // Está em pages/
+            const pagesPaths = {
+                home: '../index.html',
+                cadastrar: 'cadastrar.html',
+                vip: 'vip.html',
+                admin: 'admin.html',
+                login: 'login.html',
+                grupo: 'grupo.html'
+            };
+            return pagesPaths[page] || '../index.html';
+        } else {
+            // Está na raiz
+            const rootPaths = {
+                home: 'index.html',
+                cadastrar: 'pages/cadastrar.html',
+                vip: 'pages/vip.html',
+                admin: 'pages/admin.html',
+                login: 'pages/login.html',
+                grupo: 'pages/grupo.html'
+            };
+            return rootPaths[page] || 'index.html';
+        }
     }
 };
 
