@@ -7,7 +7,6 @@
     <meta name="description" content="Painel para gerenciar grupos e categorias.">
     <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="stylesheet" href="../static/css/main.css">
-    <link rel="stylesheet" href="../static/css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -31,63 +30,118 @@
     <div class="admin-dashboard">
         <div class="admin-sidebar">
             <ul>
-                <li><a href="#pending-groups" class="active">Grupos Pendentes</a></li>
-                <li><a href="#all-groups">Todos os Grupos</a></li>
-                <li><a href="#categories">Categorias</a></li>
-                <li><a href="#settings">Configurações</a></li>
+                <li><a href="#pending-groups" class="active">📋 Grupos Pendentes</a></li>
+                <li><a href="#all-groups">📊 Todos os Grupos</a></li>
+                <li><a href="#categories">🏷️ Categorias</a></li>
+                <li><a href="#settings">⚙️ Configurações</a></li>
             </ul>
         </div>
+        
         <div class="admin-content">
+            <!-- Grupos Pendentes -->
             <section id="pending-groups" class="admin-section">
-                <div class="admin-header"><h2 class="admin-title">Grupos Pendentes de Aprovação</h2></div>
+                <div class="admin-header">
+                    <h2 class="admin-title">Grupos Pendentes de Aprovação</h2>
+                </div>
                 <div class="admin-card">
                     <div class="table-responsive">
                         <table class="admin-table">
-                            <thead><tr><th>Nome</th><th>Plataforma</th><th>Categoria</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
-                            <tbody id="pending-groups-table"><tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr></tbody>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Plataforma</th>
+                                    <th>Categoria</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-groups-table">
+                                <tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </section>
+
+            <!-- Todos os Grupos -->
             <section id="all-groups" class="admin-section" style="display: none;">
-                <div class="admin-header"><h2 class="admin-title">Todos os Grupos</h2></div>
+                <div class="admin-header">
+                    <h2 class="admin-title">Todos os Grupos</h2>
+                </div>
                 <div class="admin-card">
                     <div class="table-responsive">
                         <table class="admin-table">
-                            <thead><tr><th>Nome</th><th>Plataforma</th><th>Categoria</th><th>Visualizações</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
-                            <tbody id="all-groups-table"><tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr></tbody>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Plataforma</th>
+                                    <th>Categoria</th>
+                                    <th>Visualizações</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-groups-table">
+                                <tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </section>
+
+            <!-- Categorias -->
             <section id="categories" class="admin-section" style="display: none;">
-                <div class="admin-header"><h2 class="admin-title">Gerenciar Categorias</h2></div>
+                <div class="admin-header">
+                    <h2 class="admin-title">Gerenciar Categorias</h2>
+                </div>
                 <div class="admin-card">
                     <form id="category-form" class="admin-form">
-                        <div class="form-group"><label for="category-name">Nome da Categoria</label><input type="text" id="category-name" name="name" class="form-control" required></div>
-                        <div class="form-group"><button type="submit" class="btn btn-primary">Adicionar Categoria</button></div>
+                        <div class="form-group">
+                            <label for="category-name">Nome da Categoria</label>
+                            <input type="text" id="category-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Adicionar Categoria</button>
+                        </div>
                     </form>
-                    <h3>Categorias Existentes</h3>
-                    <div id="categories-list"><div class="spinner"></div></div>
+                    
+                    <h3 style="margin-top: 30px;">Categorias Existentes</h3>
+                    <div id="categories-list">
+                        <div class="spinner"></div>
+                    </div>
                 </div>
             </section>
+
+            <!-- Configurações -->
             <section id="settings" class="admin-section" style="display: none;">
-                <div class="admin-header"><h2 class="admin-title">Configurações</h2></div>
+                <div class="admin-header">
+                    <h2 class="admin-title">Configurações</h2>
+                </div>
                 <div class="admin-card">
                     <form id="settings-form" class="admin-form">
-                        <div class="form-group"><label><input type="checkbox" id="auto-approve" name="auto-approve"> Aprovar grupos automaticamente</label></div>
-                        <div class="form-group"><button type="submit" class="btn btn-primary">Salvar Configurações</button></div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="auto-approve">
+                                Aprovar grupos automaticamente
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                        </div>
                     </form>
                 </div>
             </section>
         </div>
     </div>
 
-    <div id="edit-group-modal" class="modal">
+    <!-- Modal de Edição -->
+    <div id="edit-group-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2>Editar Grupo</h2>
-            <div id="edit-group-form-container"><div class="spinner"></div></div>
+            <div id="edit-group-form-container"></div>
         </div>
     </div>
 
@@ -98,86 +152,72 @@
             <div class="footer-column"><h3>Categorias Populares</h3><ul><li><a href="#">Jogos</a></li><li><a href="#">Tecnologia</a></li><li><a href="#">Educação</a></li><li><a href="#">Entretenimento</a></li></ul></div>
             <div class="footer-column"><h3>Contato</h3><ul><li><a href="mailto:contato@gruposlista.com">contato@gruposlista.com</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Termos de Uso</a></li></ul></div>
         </div>
-        <div class="footer-bottom"><p>&copy; <span id="current-year"></span> Grupos Lista. Todos os direitos reservados.</p></div>
+        <div class="footer-bottom"><p>&copy; 2024 Grupos Lista. Todos os direitos reservados.</p></div>
     </footer>
 
     <!-- Script de inicialização do Supabase -->
     <script>
     (function() {
-        console.log('🔧 Inicializando Supabase...');
-        
         const SUPABASE_URL = 'https://nhbctpgmzrnrfulkuhgf.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_-oGF3MZ-AT3C04L7b2m-OA_PZyi4BSx';
         
-        if (window.supabaseClient) {
-            console.log('✅ Cliente Supabase já existe');
-            return;
+        function initSupabase() {
+            if (typeof supabase === 'undefined') {
+                console.error('Biblioteca Supabase não carregada');
+                return null;
+            }
+            
+            try {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = client;
+                console.log('✅ Supabase inicializado no admin');
+                return client;
+            } catch (error) {
+                console.error('Erro ao criar cliente:', error);
+                return null;
+            }
         }
         
+        // Aguardar biblioteca
         function waitForSupabase() {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 let attempts = 0;
-                const maxAttempts = 50;
+                const maxAttempts = 20;
                 
                 const check = () => {
                     attempts++;
-                    
-                    if (window.supabase && window.supabase.createClient) {
-                        console.log('📚 Biblioteca Supabase carregada');
-                        try {
-                            const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                            resolve(client);
-                        } catch (error) {
-                            reject(error);
-                        }
+                    if (typeof supabase !== 'undefined') {
+                        const client = initSupabase();
+                        resolve(client);
                     } else if (attempts >= maxAttempts) {
-                        reject(new Error('Timeout ao carregar Supabase'));
+                        resolve(null);
                     } else {
                         setTimeout(check, 100);
                     }
                 };
-                
                 check();
             });
         }
         
-        waitForSupabase()
-            .then(client => {
-                window.supabaseClient = client;
-                console.log('✅ Cliente Supabase criado com sucesso');
-                console.log('🔐 Auth disponível:', !!client.auth);
-            })
-            .catch(error => {
-                console.error('❌ Falha ao inicializar Supabase:', error);
-            });
+        waitForSupabase().then(client => {
+            if (client) {
+                // Testar conexão
+                client.from('categories').select('count').then(result => {
+                    if (result.error) {
+                        console.error('Erro de conexão:', result.error);
+                    }
+                });
+            }
+        });
     })();
     </script>
 
-    <!-- Scripts principais -->
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
     <script src="../js/supabase.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/admin.js"></script>
 
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('edit-group-modal');
-            const closeBtn = document.querySelector('.close-modal');
-            
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    modal.style.display = 'none';
-                });
-            }
-            
-            window.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        });
-    </script>
 </body>
 </html>
