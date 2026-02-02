@@ -58,6 +58,29 @@
             </div>
         </div>
     </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Aguardar Supabase estar pronto
+        await new Promise(resolve => {
+            const check = () => {
+                if (window.supabaseClient && window.auth && window.db && window.forms) {
+                    resolve();
+                } else {
+                    setTimeout(check, 100);
+                }
+            };
+            check();
+        });
+        
+        console.log('✅ Todos os scripts carregados, inicializando formulário...');
+        
+        // Inicializar formulário
+        await forms.initGroupForm();
+        
+        // Atualizar UI de autenticação
+        await auth.updateAuthUI();
+    });
+</script>
 
     <footer>
         <div class="container">
