@@ -1,5 +1,252 @@
-const admin={async renderPendingGroups(){const container=document.getElementById('pending-groups-table');if(!container)return;container.innerHTML='<tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr>';try{const {data,error}=await supabase.from('groups').select('*, categories(name)').eq('status','pending').order('created_at',{ascending:false});if(error)throw error;if(data.length===0){container.innerHTML='<tr><td colspan="6" class="text-center">Nenhum grupo pendente.</td></tr>';return;}container.innerHTML=data.map(group=>`<tr><td>${group.name}</td><td>${group.platform}</td><td>${group.categories?.name||'N/A'}</td><td>${utils.formatDate(group.created_at)}</td><td><span class="status-badge status-pending">Pendente</span></td><td><div class="action-buttons"><button class="btn-action btn-approve" data-id="${group.id}">Aprovar</button><button class="btn-action btn-reject" data-id="${group.id}">Rejeitar</button><button class="btn-action btn-edit" data-id="${group.id}">Editar</button><button class="btn-action btn-delete" data-id="${group.id}">Excluir</button></div></td></tr>`).join('');this.attachGroupActionListeners();}catch(error){console.error('Erro ao renderizar grupos pendentes:',error);container.innerHTML='<tr><td colspan="6" class="text-center">Erro ao carregar.</td></tr>';}},async renderAllGroups(){const container=document.getElementById('all-groups-table');if(!container)return;container.innerHTML='<tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr>';try{const {data,error}=await supabase.from('groups').select('*, categories(name)').order('created_at',{ascending:false});if(error)throw error;if(data.length===0){container.innerHTML='<tr><td colspan="7" class="text-center">Nenhum grupo encontrado.</td></tr>';return;}container.innerHTML=data.map(group=>{const statusClass=`status-${group.status}`;const statusText=group.status==='pending'?'Pendente':group.status==='approved'?'Aprovado':'Rejeitado';const vipBadge=group.isVIP?'<span class="vip-badge">VIP</span>':'';return`<tr><td>${group.name}${vipBadge}</td><td>${group.platform}</td><td>${group.categories?.name||'N/A'}</td><td>${group.views||0}</td><td>${utils.formatDate(group.created_at)}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td><td><div class="action-buttons">${group.status==='pending'?`<button class="btn-action btn-approve" data-id="${group.id}">Aprovar</button><button class="btn-action btn-reject" data-id="${group.id}">Rejeitar</button>`:''}<button class="btn-action btn-edit" data-id="${group.id}">Editar</button><button class="btn-action btn-delete" data-id="${group.id}">Excluir</button>${!group.isVIP?`<button class="btn-action btn-vip" data-id="${group.id}">Tornar VIP</button>`:''}</div></td></tr>`;}).join('');this.attachGroupActionListeners();}catch(error){console.error('Erro ao renderizar todos os grupos:',error);container.innerHTML='<tr><td colspan="7" class="text-center">Erro ao carregar.</td></tr>';}},async renderEditGroupForm(groupId){const container=document.getElementById('edit-group-form-container');if(!container)return;container.innerHTML='<div class="spinner"></div>';try{const group=await db.getGroupById(groupId);const categories=await db.getCategories();if(!group){container.innerHTML='<p class="text-center">Grupo não encontrado.</p>';return;}container.innerHTML=`<form id="edit-group-form" class="admin-form"><input type="hidden" id="group-id" value="${group.id}"><div class="form-row"><div class="form-group"><label for="name">Nome</label><input type="text" id="name" name="name" class="form-control" value="${group.name}" required></div><div class="form-group"><label for="platform">Plataforma</label><select id="platform" name="platform" class="form-control" required><option value="WhatsApp" ${group.platform==='WhatsApp'?'selected':''}>WhatsApp</option><option value="Telegram" ${group.platform==='Telegram'?'selected':''}>Telegram</option><option value="Discord" ${group.platform==='Discord'?'selected':''}>Discord</option></select></div></div><div class="form-row"><div class="form-group"><label for="category">Categoria</label><select id="category" name="category" class="form-control" required>${categories.map(c=>`<option value="${c.id}" ${group.category===c.id?'selected':''}>${c.name}</option>`).join('')}</select></div><div class="form-group"><label for="status">Status</label><select id="status" name="status" class="form-control" required><option value="pending" ${group.status==='pending'?'selected':''}>Pendente</option><option value="approved" ${group.status==='approved'?'selected':''}>Aprovado</option><option value="rejected" ${group.status==='rejected'?'selected':''}>Rejeitado</option></select></div></div><div class="form-group"><label for="description">Descrição</label><textarea id="description" name="description" class="form-control" required>${group.description}</textarea></div><div class="form-group"><label for="invite_link">Link de Convite</label><input type="url" id="invite_link" name="invite_link" class="form-control" value="${group.invite_link}" required></div><div class="form-group"><label><input type="checkbox" id="isVIP" name="isVIP" ${group.isVIP?'checked':''}> Marcar como VIP</label></div><div class="form-group"><button type="submit" class="btn btn-primary">Salvar</button><button type="button" id="cancel-edit" class="btn btn-outline">Cancelar</button></div></form>`;document.getElementById('edit-group-form').addEventListener('submit',this.handleEditGroupSubmit);document.getElementById('cancel-edit').addEventListener('click',()=>{document.getElementById('edit-group-modal').style.display='none';});}catch(error){console.error('Erro ao renderizar formulário de edição:',error);container.innerHTML='<p class="text-center">Erro ao carregar formulário.</p>';}},attachGroupActionListeners(){document.querySelectorAll('.btn-approve').forEach(btn=>{btn.addEventListener('click',async()=>{const success=await this.approveGroup(btn.dataset.id);if(success){utils.showToast('Grupo aprovado!','success');this.renderPendingGroups();this.renderAllGroups();}else{utils.showToast('Erro ao aprovar.','error');}});});document.querySelectorAll('.btn-reject').forEach(btn=>{btn.addEventListener('click',async()=>{const success=await this.rejectGroup(btn.dataset.id);if(success){utils.showToast('Grupo rejeitado!','success');this.renderPendingGroups();this.renderAllGroups();}else{utils.showToast('Erro ao rejeitar.','error');}});});document.querySelectorAll('.btn-edit').forEach(btn=>{btn.addEventListener('click',async()=>{await this.renderEditGroupForm(btn.dataset.id);document.getElementById('edit-group-modal').style.display='block';});});document.querySelectorAll('.btn-delete').forEach(btn=>{btn.addEventListener('click',async()=>{if(confirm('Tem certeza?')){const success=await this.deleteGroup(btn.dataset.id);if(success){utils.showToast('Grupo excluído!','success');this.renderPendingGroups();this.renderAllGroups();}else{utils.showToast('Erro ao excluir.','error');}}});});document.querySelectorAll('.btn-vip').forEach(btn=>{btn.addEventListener('click',async()=>{const success=await this.makeGroupVIP(btn.dataset.id);if(success){utils.showToast('Grupo é VIP agora!','success');this.renderAllGroups();}else{utils.showToast('Erro ao tornar VIP.','error');}});});},async approveGroup(groupId){const result=await db.updateGroup(groupId,{status:'approved'});return!!result;},async rejectGroup(groupId){const result=await db.updateGroup(groupId,{status:'rejected'});return!!result;},async deleteGroup(groupId){return await db.deleteGroup(groupId);},async makeGroupVIP(groupId){const result=await db.updateGroup(groupId,{isVIP:true});return!!result;},async handleEditGroupSubmit(e){e.preventDefault();const formData=new FormData(e.target);const groupId=formData.get('group-id');const groupData={name:formData.get('name'),platform:formData.get('platform'),category:formData.get('category'),description:formData.get('description'),invite_link:formData.get('invite_link'),status:formData.get('status'),isVIP:formData.get('isVIP')==='on'};const submitBtn=e.target.querySelector('button[type="submit"]');const originalText=submitBtn.textContent;submitBtn.disabled=true;submitBtn.textContent='Salvando...';try{const result=await db.updateGroup(groupId,groupData);if(result){utils.showToast('Grupo atualizado!','success');document.getElementById('edit-group-modal').style.display='none';this.renderPendingGroups();this.renderAllGroups();}else{utils.showToast('Erro ao atualizar.','error');}}catch(error){console.error('Erro ao atualizar grupo:',error);utils.showToast('Erro ao atualizar.','error');}finally{submitBtn.disabled=false;submitBtn.textContent=originalText;}}};
-document.addEventListener('DOMContentLoaded',async()=>{if(!(await auth.requireAdmin()))return;await admin.renderPendingGroups();await admin.renderAllGroups();
-    const navLinks=document.querySelectorAll('.admin-sidebar a');const sections=document.querySelectorAll('.admin-section');navLinks.forEach(link=>{link.addEventListener('click',e=>{e.preventDefault();navLinks.forEach(l=>l.classList.remove('active'));sections.forEach(s=>s.style.display='none');link.classList.add('active');const sectionId=link.getAttribute('href').substring(1);const section=document.getElementById(sectionId);if(section)section.style.display='block';});});
-    const modal=document.getElementById('edit-group-modal');const closeBtn=document.querySelector('.close-modal');if(closeBtn){closeBtn.addEventListener('click',()=>{modal.style.display='none';});}window.addEventListener('click',e=>{if(e.target===modal){modal.style.display='none';}});});
-window.admin=admin;
+// Adicione estas funções ao objeto admin no arquivo js/admin.js:
+
+const admin = {
+    // ... funções existentes ...
+    
+    // Renderizar categorias
+    async renderCategories() {
+        const container = document.getElementById('categories-list');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="spinner"></div>';
+        
+        try {
+            const categories = await db.getCategories();
+            
+            console.log('Categorias carregadas:', categories); // Debug
+            
+            if (categories.length === 0) {
+                container.innerHTML = '<p class="text-center">Nenhuma categoria encontrada.</p>';
+                return;
+            }
+            
+            container.innerHTML = categories.map(category => `
+                <div class="category-item" data-id="${category.id}">
+                    <span>${category.name}</span>
+                    <div class="category-actions">
+                        <button class="btn-action btn-edit-category" data-id="${category.id}">Editar</button>
+                        <button class="btn-action btn-delete-category" data-id="${category.id}">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            this.attachCategoryListeners();
+            
+        } catch (error) {
+            console.error('Erro ao renderizar categorias:', error);
+            container.innerHTML = '<p class="text-center">Erro ao carregar categorias.</p>';
+        }
+    },
+    
+    // Anexar listeners para categorias
+    attachCategoryListeners() {
+        // Botões de editar categoria
+        document.querySelectorAll('.btn-edit-category').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const categoryId = btn.dataset.id;
+                const categoryItem = btn.closest('.category-item');
+                const categoryName = categoryItem.querySelector('span').textContent;
+                
+                categoryItem.innerHTML = `
+                    <input type="text" class="form-control edit-category-input" value="${categoryName}">
+                    <div class="category-actions">
+                        <button class="btn-action btn-save-category" data-id="${categoryId}">Salvar</button>
+                        <button class="btn-action btn-cancel-edit">Cancelar</button>
+                    </div>
+                `;
+                
+                // Adicionar listeners para salvar/cancelar
+                const saveBtn = categoryItem.querySelector('.btn-save-category');
+                const cancelBtn = categoryItem.querySelector('.btn-cancel-edit');
+                const input = categoryItem.querySelector('.edit-category-input');
+                
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', async () => {
+                        await this.updateCategory(categoryId, input.value);
+                    });
+                }
+                
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', () => {
+                        this.renderCategories();
+                    });
+                }
+            });
+        });
+        
+        // Botões de deletar categoria
+        document.querySelectorAll('.btn-delete-category').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+                    const success = await this.deleteCategory(btn.dataset.id);
+                    if (success) {
+                        utils.showToast('Categoria excluída!', 'success');
+                        await this.renderCategories();
+                    } else {
+                        utils.showToast('Erro ao excluir categoria.', 'error');
+                    }
+                }
+            });
+        });
+    },
+    
+    // Atualizar categoria
+    async updateCategory(id, name) {
+        try {
+            if (!name.trim()) {
+                utils.showToast('O nome da categoria não pode estar vazio.', 'error');
+                return false;
+            }
+            
+            const { error } = await supabaseClient
+                .from('categories')
+                .update({ name: name.trim() })
+                .eq('id', id);
+            
+            if (error) throw error;
+            
+            utils.showToast('Categoria atualizada!', 'success');
+            await this.renderCategories();
+            return true;
+            
+        } catch (error) {
+            console.error('Erro ao atualizar categoria:', error);
+            utils.showToast('Erro ao atualizar categoria.', 'error');
+            return false;
+        }
+    },
+    
+    // Deletar categoria
+    async deleteCategory(id) {
+        try {
+            // Verificar se há grupos usando esta categoria
+            const { data: groups, error: groupsError } = await supabaseClient
+                .from('groups')
+                .select('id')
+                .eq('category', id)
+                .limit(1);
+            
+            if (groupsError) throw groupsError;
+            
+            if (groups && groups.length > 0) {
+                utils.showToast('Não é possível excluir: existem grupos usando esta categoria.', 'error');
+                return false;
+            }
+            
+            const { error } = await supabaseClient
+                .from('categories')
+                .delete()
+                .eq('id', id);
+            
+            if (error) throw error;
+            
+            return true;
+            
+        } catch (error) {
+            console.error('Erro ao excluir categoria:', error);
+            utils.showToast('Erro ao excluir categoria.', 'error');
+            return false;
+        }
+    },
+    
+    // Verificar se é admin
+    async requireAdmin() {
+        try {
+            const isAdmin = await db.isAdmin();
+            
+            if (!isAdmin) {
+                utils.showToast('Acesso negado. Apenas administradores podem acessar.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erro ao verificar admin:', error);
+            return false;
+        }
+    }
+};
+
+// Atualize a inicialização do admin.js:
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Painel admin iniciando...');
+    
+    // Verificar se é admin
+    const isAdmin = await admin.requireAdmin();
+    if (!isAdmin) return;
+    
+    console.log('✅ Usuário é admin, carregando painel...');
+    
+    // Inicializar seções
+    await admin.renderPendingGroups();
+    await admin.renderAllGroups();
+    await admin.renderCategories(); // Adicionar esta linha
+    
+    // Configurar navegação
+    const navLinks = document.querySelectorAll('.admin-sidebar a');
+    const sections = document.querySelectorAll('.admin-section');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Remover classe active de todos
+            navLinks.forEach(l => l.classList.remove('active'));
+            sections.forEach(s => s.style.display = 'none');
+            
+            // Adicionar classe active ao clicado
+            link.classList.add('active');
+            
+            // Mostrar seção correspondente
+            const sectionId = link.getAttribute('href').substring(1);
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+            }
+        });
+    });
+    
+    // Configurar formulário de categoria
+    const categoryForm = document.getElementById('category-form');
+    if (categoryForm) {
+        categoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('category-name');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                utils.showToast('Digite um nome para a categoria.', 'error');
+                return;
+            }
+            
+            const submitBtn = categoryForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adicionando...';
+            
+            try {
+                const result = await db.createCategory({ name });
+                
+                if (result) {
+                    utils.showToast('Categoria adicionada com sucesso!', 'success');
+                    nameInput.value = '';
+                    await admin.renderCategories();
+                } else {
+                    utils.showToast('Erro ao adicionar categoria.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar categoria:', error);
+                utils.showToast('Erro: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    }
+});
