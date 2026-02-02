@@ -1,30 +1,30 @@
-// js/supabase.js
+// js/supabase.js - CORRIGIDO
 const SUPABASE_URL = 'https://nhbctpgmzrnrfulkuhgf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_-oGF3MZ-AT3C04L7b2m-OA_PZyi4BSx';
 
 // Função para obter cliente Supabase
 function getSupabaseClient() {
+    // Verificar se já temos cliente
     if (window.supabaseClient) {
         return window.supabaseClient;
     }
     
-    if (typeof supabase !== 'undefined' && supabase.createClient) {
-        try {
-            window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Cliente Supabase criado');
-            return window.supabaseClient;
-        } catch (error) {
-            console.error('❌ Erro ao criar cliente:', error);
-            return null;
-        }
+    // Verificar se a biblioteca está carregada
+    if (typeof window.supabase === 'undefined') {
+        console.warn('⚠️ Biblioteca Supabase não carregada ainda');
+        return null;
     }
     
-    console.warn('⚠️ Supabase não disponível');
-    return null;
+    try {
+        console.log('📚 Criando cliente Supabase...');
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Cliente Supabase criado');
+        return window.supabaseClient;
+    } catch (error) {
+        console.error('❌ Erro ao criar cliente:', error);
+        return null;
+    }
 }
-
-// Obter cliente
-const supabase = getSupabaseClient();
 
 // Banco de dados
 const db = {
@@ -32,7 +32,13 @@ const db = {
     _client() {
         const client = getSupabaseClient();
         if (!client) {
-            throw new Error('Supabase não disponível');
+            console.warn('⚠️ Supabase não disponível, tentando novamente...');
+            // Tentar obter novamente
+            const newClient = getSupabaseClient();
+            if (!newClient) {
+                throw new Error('Supabase não disponível');
+            }
+            return newClient;
         }
         return client;
     },
@@ -95,8 +101,9 @@ const db = {
     async createGroup(groupData) {
         try {
             const client = this._client();
-            const user = await this._getCurrentUser();
             
+            // Obter usuário atual
+            const { data: { user } } = await client.auth.getUser();
             if (!user) {
                 throw new Error('Usuário não autenticado');
             }
@@ -214,7 +221,7 @@ const db = {
     async isAdmin() {
         try {
             const client = this._client();
-            const user = await this._getCurrentUser();
+            const { data: { user } } = await client.auth.getUser();
             
             if (!user) return false;
             
@@ -233,7 +240,7 @@ const db = {
     },
     
     // Obter usuário atual
-    async _getCurrentUser() {
+    async getCurrentUser() {
         try {
             const client = this._client();
             const { data: { user } } = await client.auth.getUser();
@@ -274,17 +281,41 @@ const db = {
     }
 };
 
+// Inicialização tardia - quando Supabase estiver pronto
+function initSupabase() {
+    const client = getSupabaseClient();
+    if (client) {
+        console.log('✅ Supabase inicializado');
+        
+        // Testar conexão
+        client.from('categories').select('count').then(result => {
+            if (result.error) {
+                console.error('❌ Erro de conexão:', result.error.message);
+            } else {
+                console.log('✅ Conexão Supabase OK');
+            }
+        });
+    }
+    return client;
+}
+
 // Exportar
 window.db = db;
-window.supabaseClient = supabase;
 
-// Teste de conexão
-if (supabase) {
-    supabase.from('categories').select('count').then(result => {
-        if (result.error) {
-            console.error('❌ Erro de conexão:', result.error.message);
-        } else {
-            console.log('✅ Conexão Supabase OK');
-        }
+// Aguardar biblioteca carregar
+if (typeof window.supabase !== 'undefined') {
+    initSupabase();
+} else {
+    // Configurar listener para quando a biblioteca carregar
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            if (typeof window.supabase !== 'undefined') {
+                initSupabase();
+            } else {
+                console.warn('⚠️ Supabase não carregou após timeout');
+            }
+        }, 1000);
     });
 }
+
+console.log('📦 Módulo Supabase carregado');
